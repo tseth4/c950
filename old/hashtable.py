@@ -3,8 +3,8 @@ class HashMap:
     # 50 elements 50 buckets
     # 40 packages -> 40 buckets?
     # key % 40
-    def __init__(self):
-        self.size = 40
+    def __init__(self, size):
+        self.size = size
         self.map = [None] * self.size
 
     def _hash(self, key):
@@ -61,17 +61,3 @@ class HashMap:
                 print(str(item))
 
 
-h = HashMap()
-h.add('Bob', '567-8888')
-h.add('Ming', '293-6753')
-h.add('Ming', '333-8233')
-h.add('Ankit', '293-8625')
-h.add('Aditya', '852-6551')
-h.add('Alicia', '632-4123')
-h.add('Mike', '567-2188')
-h.add('Aditya', '777-8888')
-h.print()
-h.delete('Bob')
-h.print()
-print('Ming: ' + h.get('Ming'))
-# print(h.keys())
