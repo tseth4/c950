@@ -14,7 +14,7 @@ class Package:
         self.notes = notes
         self.status = status
         self.delivery_time = None  # To be updated when delivered
-        
+
     @classmethod
     def from_csv_row(cls, row):
         """Create a Package instance from a CSV row (positional)."""
@@ -35,13 +35,20 @@ class Package:
         """
         return (
             f"Package ID: {self.id}\n"
-            f"Address: {self.address}, {self.city}, {self.state} {self.zipcode}\n"
+            f"Address: {self.address}, {self.city}, {
+                self.state} {self.zipcode}\n"
             f"Deadline: {self.deadline}\n"
             f"Weight: {self.weight_in_kilo} kg\n"
             f"Notes: {self.notes or 'None'}\n"
             f"Status: {self.status.value}\n"
             f"Delivery Time: {self.delivery_time or 'Pending'}"
         )
+
+    def get_standardized_address(self):
+        """
+        Construct a standardized address for matching with adjacency matrix.
+        """
+        return f"{self.address}, {self.city}, {self.state} {self.zipcode}"
 
 
 # "Package

@@ -13,7 +13,7 @@ def load_packages():
     with open(packages_file_path, mode='r', encoding='utf-8-sig') as file:
         csv_reader = csv.reader(file)
         for row in csv_reader:
-            print(row[0])
+            # print(row)
             package = Package.from_csv_row(row)
             packages.add(int(row[0]), package)
         return packages
@@ -27,7 +27,7 @@ def load_distances():
     addresses = rows[0][1:]
     # Build Matrix
     distance_matrix = AdjacencyMatrix(len(addresses))
-    print(distance_matrix)
+    # print(distance_matrix)
 
     # Build adjacency matrix
     for i, row in enumerate(rows[1:]):
