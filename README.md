@@ -1,7 +1,10 @@
 Scenario
 This task is the planning phase of the WGUPS Routing Program.
 
- 
+ "Package
+ID",Address,City ,State,Zip,"Delivery
+Deadline","Weight
+KILO",page 1 of 1PageSpecial Notes
 
 The Western Governors University Parcel Service (WGUPS) needs to determine an efficient route and delivery distribution for their daily local deliveries (DLD) because packages are not currently being consistently delivered by their promised deadline. 
 
@@ -45,3 +48,17 @@ Assumptions
 •  The distances provided in the “WGUPS Distance Table” are equal regardless of the direction traveled.
 
 •  The day ends when all 40 packages have been delivered.
+
+
+
+# NEw
+
+
+Integrating with the Algorithm
+Pre-Load All Packages into the Hash Table:
+Load the package data at the start of the program.
+During Nearest Neighbor Execution:
+Check the hash table for package constraints (e.g., deadlines or address corrections).
+Update the package’s status and delivery time as it's delivered.
+Output Delivery Information:
+After the route is completed, iterate over the hash table to display the final status of each package.

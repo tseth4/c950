@@ -1,5 +1,5 @@
 from enum import Enum
-from package_status import PackageStatus
+from src.package_status import PackageStatus
 
 
 class Package:
@@ -14,7 +14,20 @@ class Package:
         self.notes = notes
         self.status = status
         self.delivery_time = None  # To be updated when delivered
-
+        
+    @classmethod
+    def from_csv_row(cls, row):
+        """Create a Package instance from a CSV row (positional)."""
+        return cls(
+            id=row[0],
+            address=row[1],
+            city=row[2],
+            state=row[3],
+            zipcode=row[4],
+            deadline=row[5],
+            weight_in_kilo=row[6],
+            notes=row[7] if len(row) > 7 else None  # Handle missing notes
+        )
 
     def __str__(self):
         """
