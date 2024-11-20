@@ -24,7 +24,11 @@ def load_distances():
         csv_reader = csv.reader(file)
         rows = list(csv_reader)
 
-    addresses = rows[0][1:]
+    temp_addresses = rows[0][1:]
+    addresses = []
+    for addr in temp_addresses:
+      addresses.append(extract_address(addr))
+      
     # Build Matrix
     distance_matrix = AdjacencyMatrix(len(addresses))
     # print(distance_matrix)
@@ -46,3 +50,21 @@ def is_number(value):
         return True
     except ValueError:
         return False
+      
+      
+
+def extract_address(full_text):
+    """
+    Extract the address from a full string, ignoring the first line.
+    
+    :param full_text: A multi-line string with a location name and address.
+    :return: The address portion of the string.
+    """
+    lines = full_text.splitlines()  # Split the input into 
+    
+    # print("lines: ", lines)
+    return_string = " ".join(lines[1:]).strip()
+    return return_string
+    # if len(lines) > 1:
+    #     return " ".join(lines[1:]).strip()  # Join lines after the first one
+    # return full_text.strip()  # Return as is if only one line

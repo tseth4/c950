@@ -44,11 +44,8 @@ class Package:
             f"Delivery Time: {self.delivery_time or 'Pending'}"
         )
 
-    def get_standardized_address(self):
-        """
-        Construct a standardized address for matching with adjacency matrix.
-        """
-        return f"{self.address}, {self.city}, {self.state} {self.zipcode}"
+    def get_address(self):
+        return f"{self.address}"
 
 
 # "Package

@@ -24,9 +24,12 @@ for i, ad in enumerate(addresses):
   print(i)
   print(ad)
   print("  ")
-print("     ")
+# print("     ")
 # print("distances: ", distances)
 # print("     ")
+
+# International Peace Gardens
+#  1060 Dalton Ave S
 
 
 # Truck class
@@ -35,12 +38,24 @@ truck2 = Truck(id=2, capacity=16)
 
 
 # Assign packages to trucks based on capacity
-# print("PACK ADD")
-# for key in packages.keys():
-#     package = packages.get(key)
-#     print(package.get_standardized_address())
-#     print("      ")
+print("PACK ADD    ")
+
+print("  ")
+print("  ")
+print("  ")
+print("  ")
+print("  ")
+print("  ")
+print("  ")
+for key in packages.keys():
+    package = packages.get(key)
+    print(addresses.index(package.get_address()))
+    print("      ")
     # if not truck1.assign_package(package):  # Try to assign to Truck 1
     #     truck2.assign_package(package)      # If Truck 1 is full, assign to Truck 2
 
 # print(truck1)
+
+# 1060 Dalton Ave S
+
+# 3575 W Valley Central Station bus Loop
