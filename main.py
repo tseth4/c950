@@ -10,7 +10,7 @@ Output delivery progress for packages (time delivered, status, etc.).
 Write clean, modular, and maintainable code.
 """
 
-# packages = load_packages()
+packages = load_packages()
 # packages.print()
 
 distances = load_distances()
