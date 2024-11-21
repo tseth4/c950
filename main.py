@@ -11,8 +11,11 @@ Output delivery progress for packages (time delivered, status, etc.).
 Write clean, modular, and maintainable code.
 """
 
-def assign_packages_to_trucks(packages, trucks):
+
+
+def assign_packages_to_trucks(packages, trucks, distances, addresses):
     # Sort packages by deadlines (earlier deadlines first)
+    # sorted_packages = packages.sort_packages_by_deadline_and_proximity(distances.matrix, addresses)
     sorted_packages = packages.get_sorted_packages_by_deadline()
 
     # Assign packages alternately to trucks (simplistic example)
@@ -38,7 +41,7 @@ addresses, distances = load_distances()
 truck1 = Truck(id=1, capacity=16)
 truck2 = Truck(id=2, capacity=16)
 
-assign_packages_to_trucks(packages, [truck1, truck2])
+assign_packages_to_trucks(packages, [truck1, truck2], distances, addresses)
 
 # Optimize routes
 # print(distances.matrix)
@@ -49,8 +52,8 @@ process_deliveries(truck1, distances.matrix, addresses)
 process_deliveries(truck2, distances.matrix, addresses)
 
 # Print package details
-# for package in packages.values():
-#     print(package)
+for package in packages.values():
+    print(package)
 
 
 

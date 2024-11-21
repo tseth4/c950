@@ -114,6 +114,42 @@ class HashMap:
 
         return sorted_packages
 
+    def sort_packages_by_deadline_and_proximity(self, adjacency_matrix, addresses):
+        """
+        Return all packages sorted by deadline (earliest first) and proximity to the hub.
+        Packages with "EOD" deadlines appear last.
+
+        :param adjacency_matrix: 2D list representing distances between addresses.
+        :param addresses: List of address names corresponding to matrix indices.
+        :return: List of sorted packages.
+        """
+        # Collect all packages
+        packages = []
+        for bucket in self.map:
+            if bucket:
+                for _, package in bucket:
+                    packages.append(package)
+
+        # Define a key function to calculate sorting priority
+        def sort_key(package):
+            # Parse deadline
+            if package.deadline == "EOD":
+                deadline = datetime.max  # Treat "EOD" as the latest possible time
+            else:
+                deadline = datetime.strptime(package.deadline, "%I:%M %p")
+
+            # Calculate proximity (distance from hub)
+            hub_index = 0
+            package_address_index = addresses.index(package.address)
+            proximity = adjacency_matrix[hub_index][package_address_index]
+
+            return (deadline, proximity)
+
+        # Sort packages by deadline first, then proximity
+        sorted_packages = sorted(packages, key=sort_key)
+
+        return sorted_packages
+
     def values(self):
         """Return a list of all values in the hash map."""
         values_list = []
