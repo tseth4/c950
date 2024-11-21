@@ -1,8 +1,9 @@
 from src.package_status import PackageStatus
+from datetime import datetime, timedelta
 
 
 class Truck:
-    def __init__(self, id, addresses, capacity):
+    def __init__(self, id, addresses, capacity, start_time="08:00:00"):
         """
         Initialize the Truck object.
 
@@ -11,12 +12,14 @@ class Truck:
         """
         self.id = id
         self.capacity = capacity
-        self.current_location_index = None  # Starting location (e.g., hub)
+        self.current_location_index = 0  # Starting location (e.g., hub)
         self.route = []  # List of addresses/nodes to visit
         self.packages = []  # List of Package objects
         self.total_distance = 0  # Total distance traveled
         self.address_mapping = addresses
+        self.current_time = datetime.strptime(start_time, "%H:%M:%S")
 
+    
     def assign_package(self, package):
         """Assign a package to the truck."""
         if len(self.packages) < self.capacity:

@@ -16,25 +16,34 @@ def process_deliveries(truck, adjacency_matrix):
         return
 
     # Start at 8:00 a.m.
-    current_time = datetime.strptime("08:00:00", "%H:%M:%S")
+    current_time = truck.current_time
     speed_mph = 18
     
     # TODO: Use truck.current_location
     # TODO: As you are delivering pop off the packaged
     # TODO: Handle routing back to the hiub
+    
+    # This is basically taking the opimized truck route index addresses in the array
+    # and adding the distance to get from current location to the next
 
     for i in range(1, len(truck.route)):  # Skip the hub
         # Get distance from the previous stop to the current stop
-        prev_address_index = truck.route[i - 1]
+        prev_address_index = truck.current_location_index
+        
+        # get current location index
         current_address_index = truck.route[i]
+        truck.current_location_index = current_address_index
         # prev_index = addresses.index(prev_address)
         # current_index = addresses.index(current_address)
+        
+        # Get distance to current location location
         distance = float(adjacency_matrix[prev_address_index][current_address_index])
 
         # Calculate travel time
         travel_time = (distance / speed_mph) * 60  # Convert hours to minutes
         # adding travel time to the current time
         current_time += timedelta(minutes=travel_time)
+        truck.current_time = current_time
         
         # truck.packages
 
