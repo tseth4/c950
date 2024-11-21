@@ -17,11 +17,12 @@ def process_deliveries(truck, adjacency_matrix):
 
     # Start at 8:00 a.m.
     current_time = truck.current_time
-    speed_mph = 18
+    speed_mph = truck.speed
     
     # TODO: Use truck.current_location
     # TODO: As you are delivering pop off the packaged
     # TODO: Handle routing back to the hiub
+    # TODO: Idea? for truck route add the package id along with location index for easier updates
     
     # This is basically taking the opimized truck route index addresses in the array
     # and adding the distance to get from current location to the next
@@ -46,12 +47,18 @@ def process_deliveries(truck, adjacency_matrix):
         truck.current_time = current_time
         
         # truck.packages
+        # if (i == len(truck.route) - 1):
+        #   pass
+        
+        
 
         # Mark packages as delivered that their address matches the current address
         for package in truck.packages:
 
             if package.address == truck.address_mapping[current_address_index]:
-                package.mark_delivered(
-                    truck.id, current_time.strftime("%H:%M:%S"))
+                # Deliver
+                package.mark_delivered(truck.id, current_time.strftime("%H:%M:%S"))
+
+                
     
     

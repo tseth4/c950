@@ -33,8 +33,8 @@ for i, package in enumerate(sorted_packages):
 
 # Optimize routes
 # print(distances.matrix)
-truck1.optimize_route(distances.matrix, addresses)
-truck2.optimize_route(distances.matrix, addresses)
+truck1.optimize_route(distances.matrix)
+truck2.optimize_route(distances.matrix)
 
 process_deliveries(truck1, distances.matrix)
 process_deliveries(truck2, distances.matrix)

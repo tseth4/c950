@@ -18,6 +18,7 @@ class Truck:
         self.total_distance = 0  # Total distance traveled
         self.address_mapping = addresses
         self.current_time = datetime.strptime(start_time, "%H:%M:%S")
+        self.speed = 18
 
     
     def assign_package(self, package):
@@ -107,7 +108,7 @@ class Truck:
         route_names = [addresses[i] for i in route]
         return route, route_names, total_distance
 
-    def optimize_route(self, matrix, addresses, hub_index=0):
+    def optimize_route(self, matrix, hub_index=0):
         """
         Optimize the route for this truck using nearest_neighbor.
 
@@ -124,7 +125,7 @@ class Truck:
         # indices = [nodes.index(addr) for addr in package_addresses]
 
         # Use nearest_neighbor to calculate the optimal route
-        route, route_names, distance = Truck.nearest_neighbor(matrix, addresses, hub_index)
+        route, route_names, distance = Truck.nearest_neighbor(matrix, self.address_mapping, hub_index)
 
         # Update truck's route and total distance
         self.route = route

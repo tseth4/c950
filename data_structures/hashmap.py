@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from src.package_status import PackageStatus 
 
 class HashMap:
     def __init__(self, initial_size=10):
@@ -158,3 +158,16 @@ class HashMap:
                 for _, value in bucket:
                     values_list.append(value)
         return values_list
+    def get_undelivered_packages(self):
+        """
+        Retrieve all undelivered packages from the hash map.
+
+        :return: List of undelivered Package objects.
+        """
+        at_hub = []
+        for bucket in self.map:
+            if bucket:  # If the bucket is not empty
+                for _, package in bucket:
+                    if package.status == PackageStatus.AT_HUB:
+                        at_hub.append(package)
+        return at_hub
