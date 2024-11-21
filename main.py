@@ -10,17 +10,26 @@ Output delivery progress for packages (time delivered, status, etc.).
 Write clean, modular, and maintainable code.
 """
 
+def assign_packages_to_trucks(packages, trucks):
+    # Sort packages by deadlines (earlier deadlines first)
+    sorted_packages = packages.get_sorted_packages_by_deadline()
+
+    # Assign packages alternately to trucks (simplistic example)
+    for i, package in enumerate(sorted_packages):
+        trucks[i % len(trucks)].packages.append(package)
+
 # packages as HashMap
 packages = load_packages()
+# packages.print()
 
 # distances as AdjacencyMatrix
 addresses, distances = load_distances()
-print(distances)
+# print(distances)
 
-for i, ad in enumerate(addresses):
-  print(i)
-  print(ad)
-  print("  ")
+# for i, ad in enumerate(addresses):
+#   print(i)
+#   print(ad)
+#   print("  ")
 
 
 
@@ -28,25 +37,13 @@ for i, ad in enumerate(addresses):
 truck1 = Truck(id=1, capacity=16)
 truck2 = Truck(id=2, capacity=16)
 
+assign_packages_to_trucks(packages, [truck1, truck2])
 
-print("PACK ADD    ")
+# Optimize routes
+# print(distances.matrix)
+truck1.optimize_route(distances.matrix, addresses)
+truck2.optimize_route(distances.matrix, addresses)
 
-print("  ")
-print("  ")
-print("  ")
-print("  ")
-print("  ")
-print("  ")
-print("  ")
-for key in packages.keys():
-    package = packages.get(key)
-    # print(addresses.index(package.get_address()))
-    print("      ")
-    if not truck1.assign_package(package):  # Try to assign to Truck 1
-        truck2.assign_package(package)      # If Truck 1 is full, assign to Truck 2
 
-# print(truck1)
 
-# 1060 Dalton Ave S
 
-# 3575 W Valley Central Station bus Loop

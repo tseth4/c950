@@ -60,7 +60,7 @@ class Truck:
 
     def process_deliveries():
         pass
-    
+
     @staticmethod
     def nearest_neighbor(matrix, addresses, start_index=0):
         """
@@ -84,8 +84,9 @@ class Truck:
             nearest_index = None
 
             for next_index in range(n):
-                if not visited[next_index] and matrix[current_index][next_index] < nearest_distance:
-                    nearest_distance = matrix[current_index][next_index]
+                current_dist = float(matrix[current_index][next_index])
+                if not visited[next_index] and current_dist < nearest_distance:
+                    nearest_distance = current_dist
                     nearest_index = next_index
 
             if nearest_index is not None:
@@ -95,9 +96,35 @@ class Truck:
                 current_index = nearest_index
 
         # Optionally return to the starting node
-        total_distance += matrix[current_index][start_index]
+        total_distance += float(matrix[current_index][start_index])
         route.append(start_index)
 
         # Convert route indices to node names
         route_names = [addresses[i] for i in route]
-        return route, route_names, total_distance
+        return route_names, total_distance
+
+    def optimize_route(self, matrix, nodes, hub_index=0):
+        """
+        Optimize the route for this truck using nearest_neighbor.
+
+        :param matrix: 2D list representing the adjacency matrix.
+        :param nodes: List of node names corresponding to the matrix indices.
+        :param hub_index: Starting index for the hub.
+        """
+        if not self.packages:
+            print(f"Truck {self.id} has no packages to deliver.")
+            return
+
+        # Get package addresses and corresponding indices
+        package_addresses = [package.get_address() for package in self.packages]
+        # indices = [nodes.index(addr) for addr in package_addresses]
+
+        # Use nearest_neighbor to calculate the optimal route
+        route, distance = Truck.nearest_neighbor(matrix, nodes, hub_index)
+
+        # Update truck's route and total distance
+        self.route = route
+        self.total_distance = distance
+        print(f"Truck {self.id} optimized route: {self.route}")
+        print(f"Total distance for Truck {
+              self.id}: {self.total_distance} miles")

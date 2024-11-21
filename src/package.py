@@ -1,5 +1,6 @@
 from enum import Enum
 from src.package_status import PackageStatus
+from datetime import datetime
 
 
 class Package:
@@ -17,6 +18,15 @@ class Package:
 
     def set_status(self, status):
         self.status = status
+
+    @staticmethod
+    def parse_deadline(p):
+        if p[1].deadline == "EOD":
+            # Assign a large value to ensure EOD comes last
+            return datetime.max
+        else:
+            # Convert deadline to a datetime object for comparison
+            return datetime.strptime(p[1].deadline, "%I:%M %p")
 
     @classmethod
     def from_csv_row(cls, row):

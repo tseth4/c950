@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 class HashMap:
     def __init__(self, initial_size=10):
         """Initialize the hash map with a default number of buckets."""
@@ -86,3 +89,27 @@ class HashMap:
         for i, bucket in enumerate(self.map):
             if bucket is not None:
                 print(f"Bucket {i}: {bucket}")
+
+    def get_sorted_packages_by_deadline(self):
+        """
+        Return all packages sorted by deadline. 
+        Packages with "EOD" deadlines appear last.
+        """
+        # Collect all packages
+        packages = []
+        for bucket in self.map:
+            if bucket:
+                for _, package in bucket:
+                    packages.append(package)
+
+        # Define a key function to sort by deadline
+        def parse_deadline(package):
+            if package.deadline == "EOD":
+                return datetime.max  # Treat "EOD" as the latest possible time
+            else:
+                return datetime.strptime(package.deadline, "%I:%M %p")
+
+        # Sort the packages
+        sorted_packages = sorted(packages, key=parse_deadline)
+
+        return sorted_packages
