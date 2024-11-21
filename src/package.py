@@ -15,6 +15,9 @@ class Package:
         self.status = status
         self.delivery_time = None  # To be updated when delivered
 
+    def set_status(self, status):
+        self.status = status
+
     @classmethod
     def from_csv_row(cls, row):
         """Create a Package instance from a CSV row (positional)."""
