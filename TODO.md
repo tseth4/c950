@@ -3,4 +3,4 @@ Delievered on time etc.
 
 Create algo to assign trucks with packages
 
-Walk through current algo to understand what is going on
+Walk through current algo

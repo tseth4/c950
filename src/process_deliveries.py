@@ -29,10 +29,12 @@ def process_deliveries(truck, adjacency_matrix, addresses):
 
         # Calculate travel time
         travel_time = (distance / speed_mph) * 60  # Convert hours to minutes
+        # adding travel time to the current time
         current_time += timedelta(minutes=travel_time)
 
-        # Mark packages as delivered
+        # Mark packages as delivered that their address matches the current address
         for package in truck.packages:
+          # 
             if package.address == current_address:
                 package.mark_delivered(
                     truck.id, current_time.strftime("%H:%M:%S"))

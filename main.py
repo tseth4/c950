@@ -49,8 +49,8 @@ process_deliveries(truck1, distances.matrix, addresses)
 process_deliveries(truck2, distances.matrix, addresses)
 
 # Print package details
-for package in packages.values():
-    print(package)
+# for package in packages.values():
+#     print(package)
 
 
 

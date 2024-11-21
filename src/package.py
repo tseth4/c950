@@ -50,20 +50,6 @@ class Package:
             notes=row[7] if len(row) > 7 else None  # Handle missing notes
         )
 
-    # def __str__(self):
-    #     """
-    #     Return a human-readable string representation of the package.
-    #     """
-    #     return (
-    #         f"Package ID: {self.id}\n"
-    #         f"Address: {self.address}, {self.city}, {
-    #             self.state} {self.zipcode}\n"
-    #         f"Deadline: {self.deadline}\n"
-    #         f"Weight: {self.weight_in_kilo} kg\n"
-    #         f"Notes: {self.notes or 'None'}\n"
-    #         f"Status: {self.status.value}\n"
-    #         f"Delivery Time: {self.delivery_time or 'Pending'}"
-    #     )
     def __str__(self):
         """
         Return a formatted string with package details.
