@@ -69,7 +69,7 @@ class Package:
         Return a formatted string with package details.
         """
         return (
-            f"{self.id}, {self.address}, {self.city}, {
+            f"id: {self.id}   address: {self.address} {self.city}, {
                 self.state}, {self.zipcode}, "
             f"{self.deadline}, {self.weight_in_kilo}, {self.notes}, ... {self.status.value} "
             f"by Truck-{self.truck_id}, {self.delivery_time if self.delivery_time else 'Pending'}"
