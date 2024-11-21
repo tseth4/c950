@@ -2,7 +2,7 @@ from src.package_status import PackageStatus
 
 
 class Truck:
-    def __init__(self, id, capacity):
+    def __init__(self, id, addresses, capacity):
         """
         Initialize the Truck object.
 
@@ -11,10 +11,11 @@ class Truck:
         """
         self.id = id
         self.capacity = capacity
-        self.current_location = None  # Starting location (e.g., hub)
+        self.current_location_index = None  # Starting location (e.g., hub)
         self.route = []  # List of addresses/nodes to visit
         self.packages = []  # List of Package objects
         self.total_distance = 0  # Total distance traveled
+        self.address_mapping = addresses
 
     def assign_package(self, package):
         """Assign a package to the truck."""
@@ -35,7 +36,7 @@ class Truck:
 
     def update_location(self, new_location, distance):
         """Move the truck to a new location and update distance."""
-        self.current_location = new_location
+        self.current_location_index = new_location
         self.total_distance += distance
 
     def reset(self):
@@ -52,7 +53,7 @@ class Truck:
         return (
             f"Truck ID: {self.id}\n"
             f"Capacity: {self.capacity}\n"
-            f"Current Location: {self.current_location}\n"
+            f"Current Location: {self.address_mapping[self.current_location_index]}\n"
             f"Total Distance Traveled: {self.total_distance} miles\n"
             f"Route: {route_str}\n"
             f"Assigned Packages: {package_ids}"
@@ -103,7 +104,7 @@ class Truck:
         route_names = [addresses[i] for i in route]
         return route, route_names, total_distance
 
-    def optimize_route(self, matrix, nodes, hub_index=0):
+    def optimize_route(self, matrix, addresses, hub_index=0):
         """
         Optimize the route for this truck using nearest_neighbor.
 
@@ -116,14 +117,14 @@ class Truck:
             return
 
         # Get package addresses and corresponding indices
-        package_addresses = [package.get_address() for package in self.packages]
+        # package_addresses = [package.get_address() for package in self.packages]
         # indices = [nodes.index(addr) for addr in package_addresses]
 
         # Use nearest_neighbor to calculate the optimal route
-        route, route_names, distance = Truck.nearest_neighbor(matrix, nodes, hub_index)
+        route, route_names, distance = Truck.nearest_neighbor(matrix, addresses, hub_index)
 
         # Update truck's route and total distance
-        self.route = route_names
+        self.route = route
         self.total_distance = distance
         # print(f"Truck {self.id} optimized route: {self.route}")
         # print(f"Total distance for Truck {

@@ -15,6 +15,7 @@ class Package:
         self.notes = notes
         self.status = status
         self.delivery_time = None  # To be updated when delivered
+        self.truck_id = None
 
     def set_status(self, status):
         self.status = status
@@ -33,8 +34,9 @@ class Package:
 
         :return: True if the package meets the deadline, False otherwise.
         """
-        if self.deadline == "EOD":
-            return True  # End of day deadlines are always met
+        if self.deadline == "EOD" and self.status == PackageStatus.DELIVERED:
+          # End of day deadlines are always met
+            return True  
 
         if self.delivery_time is None:
             return False  # If no delivery time, it doesn't meet the deadline
@@ -74,10 +76,10 @@ class Package:
         Return a formatted string with package details.
         """
         meets_deadline_status = "Yes" if self.meets_deadline() else "No"
+        
         return (
-            f"id: {self.id}   address: {self.address} {self.city}, {
-                self.state}, {self.zipcode}| "
-            f"Deadline: {self.deadline}| Status: {self.status.value} "
+            f"id: {self.id}   address: {self.address} | "
+            f"Deadline: {self.deadline}| Status: {self.status.value} |  "
             f"by Truck-{self.truck_id}, {self.delivery_time if self.delivery_time else 'Pending'}| Meets Deadline: {meets_deadline_status}"
             
         )

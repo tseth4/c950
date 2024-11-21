@@ -1,6 +1,4 @@
 Fix output log with.
 Delievered on time etc.
 
-Create algo to assign trucks with packages
-
-Walk through current algo
+Fix assigning over capcity of packages and develop functionality that goes back to hub accoutning for distance traveled

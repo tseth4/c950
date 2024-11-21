@@ -11,17 +11,6 @@ Output delivery progress for packages (time delivered, status, etc.).
 Write clean, modular, and maintainable code.
 """
 
-
-
-def assign_packages_to_trucks(packages, trucks, distances, addresses):
-    # Sort packages by deadlines (earlier deadlines first)
-    # sorted_packages = packages.sort_packages_by_deadline_and_proximity(distances.matrix, addresses)
-    sorted_packages = packages.get_sorted_packages_by_deadline()
-
-    # Assign packages alternately to trucks (simplistic example)
-    for i, package in enumerate(sorted_packages):
-        trucks[i % len(trucks)].packages.append(package)
-
 # packages as HashMap
 packages = load_packages()
 # packages.print()
@@ -30,31 +19,28 @@ packages = load_packages()
 addresses, distances = load_distances()
 # print(distances)
 
-# for i, ad in enumerate(addresses):
-#   print(i)
-#   print(ad)
-#   print("  ")
-
-
-
 # Truck class
-truck1 = Truck(id=1, capacity=16)
-truck2 = Truck(id=2, capacity=16)
+truck1 = Truck(id=1, addresses=addresses, capacity=16)
+truck2 = Truck(id=2, addresses=addresses, capacity=16)
 
-assign_packages_to_trucks(packages, [truck1, truck2], distances, addresses)
+trucks = [truck1, truck2]
+sorted_packages = packages.get_sorted_packages_by_deadline()
+for i, package in enumerate(sorted_packages):
+    trucks[i % len(trucks)].assign_package(package)
+
+
+# assign_packages_to_trucks(packages, [truck1, truck2], distances, addresses)
 
 # Optimize routes
 # print(distances.matrix)
 truck1.optimize_route(distances.matrix, addresses)
 truck2.optimize_route(distances.matrix, addresses)
 
-process_deliveries(truck1, distances.matrix, addresses)
-process_deliveries(truck2, distances.matrix, addresses)
+process_deliveries(truck1, distances.matrix)
+process_deliveries(truck2, distances.matrix)
 
+for p in truck1.packages:
+    print(p.id)
 # Print package details
 for package in packages.values():
     print(package)
-
-
-
-
