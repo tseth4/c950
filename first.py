@@ -39,17 +39,17 @@ def nearest_neighbor(distance_matrix, start_node):
     return route, total_distance
 
 
-# Example Usage
-if __name__ == "__main__":
-    # Example distance matrix (symmetric for undirected graph)
-    distance_matrix = [
-        [0, 10, 15, 20],
-        [10, 0, 35, 25],
-        [15, 35, 0, 30],
-        [20, 25, 30, 0]
-    ]
-    start_node = 0  # Start at node 0 (hub)
+# # Example Usage
+# if __name__ == "__main__":
+#     # Example distance matrix (symmetric for undirected graph)
+#     distance_matrix = [
+#         [0, 10, 15, 20],
+#         [10, 0, 35, 25],
+#         [15, 35, 0, 30],
+#         [20, 25, 30, 0]
+#     ]
+#     start_node = 0  # Start at node 0 (hub)
 
-    route, total_distance = nearest_neighbor(distance_matrix, start_node)
-    print(f"Optimal Route: {route}")
-    print(f"Total Distance: {total_distance}")
+#     route, total_distance = nearest_neighbor(distance_matrix, start_node)
+#     print(f"Optimal Route: {route}")
+#     print(f"Total Distance: {total_distance}")

@@ -19,6 +19,14 @@ class Package:
     def set_status(self, status):
         self.status = status
 
+    def mark_delivered(self, truck_id, delivery_time):
+        """
+        Update the package status to Delivered.
+        """
+        self.status = PackageStatus.DELIVERED
+        self.truck_id = truck_id
+        self.delivery_time = delivery_time
+
     @staticmethod
     def parse_deadline(p):
         if p[1].deadline == "EOD":
@@ -42,19 +50,29 @@ class Package:
             notes=row[7] if len(row) > 7 else None  # Handle missing notes
         )
 
+    # def __str__(self):
+    #     """
+    #     Return a human-readable string representation of the package.
+    #     """
+    #     return (
+    #         f"Package ID: {self.id}\n"
+    #         f"Address: {self.address}, {self.city}, {
+    #             self.state} {self.zipcode}\n"
+    #         f"Deadline: {self.deadline}\n"
+    #         f"Weight: {self.weight_in_kilo} kg\n"
+    #         f"Notes: {self.notes or 'None'}\n"
+    #         f"Status: {self.status.value}\n"
+    #         f"Delivery Time: {self.delivery_time or 'Pending'}"
+    #     )
     def __str__(self):
         """
-        Return a human-readable string representation of the package.
+        Return a formatted string with package details.
         """
         return (
-            f"Package ID: {self.id}\n"
-            f"Address: {self.address}, {self.city}, {
-                self.state} {self.zipcode}\n"
-            f"Deadline: {self.deadline}\n"
-            f"Weight: {self.weight_in_kilo} kg\n"
-            f"Notes: {self.notes or 'None'}\n"
-            f"Status: {self.status.value}\n"
-            f"Delivery Time: {self.delivery_time or 'Pending'}"
+            f"{self.id}, {self.address}, {self.city}, {
+                self.state}, {self.zipcode}, "
+            f"{self.deadline}, {self.weight_in_kilo}, {self.notes}, ... {self.status.value} "
+            f"by Truck-{self.truck_id}, {self.delivery_time if self.delivery_time else 'Pending'}"
         )
 
     def get_address(self):

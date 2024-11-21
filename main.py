@@ -2,6 +2,7 @@ from src.data_loader import load_packages, load_distances
 from src.truck import Truck
 from src.package import Package
 from data_structures.nearest_neighbor import nearest_neighbor
+from src.process_deliveries import process_deliveries
 
 """
 Deliver 40 packages using 3 trucks under 140 miles total.
@@ -43,6 +44,13 @@ assign_packages_to_trucks(packages, [truck1, truck2])
 # print(distances.matrix)
 truck1.optimize_route(distances.matrix, addresses)
 truck2.optimize_route(distances.matrix, addresses)
+
+process_deliveries(truck1, distances.matrix, addresses)
+process_deliveries(truck2, distances.matrix, addresses)
+
+# Print package details
+for package in packages.values():
+    print(package)
 
 
 

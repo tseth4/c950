@@ -113,3 +113,12 @@ class HashMap:
         sorted_packages = sorted(packages, key=parse_deadline)
 
         return sorted_packages
+
+    def values(self):
+        """Return a list of all values in the hash map."""
+        values_list = []
+        for bucket in self.map:
+            if bucket:  # Check if the bucket is not empty
+                for _, value in bucket:
+                    values_list.append(value)
+        return values_list
