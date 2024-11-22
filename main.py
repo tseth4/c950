@@ -40,7 +40,9 @@ for i, package in enumerate(sorted_packages):
 
 
 for truck in trucks:
-  truck.process_deliveries(distances.matrix, datetime.strptime("9:00:00", "%H:%M:%S"))
+  truck.process_deliveries(distances.matrix
+                          #  , datetime.strptime("9:00:00", "%H:%M:%S")
+                           )
 
 
 for package in packages.values():
