@@ -13,7 +13,8 @@ def process_deliveries(truck, adjacency_matrix, cutoff_time=None):
         cutoff_time = datetime.strptime("17:00:00", "%H:%M:%S")
   
     while truck.packages:  # Process deliveries while there are packages to deliver
-        # Select up to the truck's capacity for this trip
+        # Select up to the truck's capacity for this trip <16>
+        print("truck.packages length: ", len(truck.packages))
         trip_packages = truck.packages[:truck.get_capacity()]
         truck.route = [0] + [p.get_address_index() for p in trip_packages]  # Hub is index 0
         # Optimize the route for this trip

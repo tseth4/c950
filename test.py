@@ -21,6 +21,8 @@
 # print("Adjacency Matrix:")
 # print(matrix)
 
-
-for i in range(2):
-  print(i)
+arr = ['d', 'e', 'a', 'd', ' ', 'i', 'n', 's', 'i', 'd', 'e']
+# selected d,e,a (first 3 elements)
+print(arr[:3])
+# for i in range(2):
+#   print(i)
