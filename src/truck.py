@@ -4,17 +4,11 @@ from datetime import datetime, timedelta
 
 class Truck:
     def __init__(self, id, addresses, capacity, start_time="08:00:00"):
-        """
-        Initialize the Truck object.
-
-        :param id: Unique identifier for the truck.
-        :param capacity: Maximum number of packages the truck can carry.
-        """
         self.id = id
         self.capacity = capacity
         self.current_location_index = 0  # Starting location (e.g., hub)
         self.route = []  # List of addresses/nodes to visit
-        self.packages = []  # List of Package objects
+        self.assigned_packages = []  # List of Package objects
         self.current_trip = []
         self.total_distance = 0  # Total distance traveled
         self.address_mapping = addresses
@@ -44,13 +38,7 @@ class Truck:
 
     def assign_package(self, package):
         """Assign a package to the truck."""
-        self.packages.append(package)
-
-        # if len(self.packages) < self.capacity:
-        #     package.set_status(PackageStatus.EN_ROUTE)
-        #     self.packages.append(package)
-        #     return True
-        # return False
+        self.assigned_packages.append(package)
 
     def get_capacity(self):
         return self.capacity
@@ -61,8 +49,8 @@ class Truck:
 
     def deliver_package(self, address):
         """Simulate delivering a package."""
-        self.packages = [
-            pkg for pkg in self.packages if pkg.address != address]
+        self.assigned_packages = [
+            pkg for pkg in self.assigned_packages if pkg.address != address]
 
     def update_location(self, new_location, distance):
         """Move the truck to a new location and update distance."""
@@ -73,12 +61,12 @@ class Truck:
         """Reset the truck for a new simulation."""
         self.current_location = None
         self.route = []
-        self.packages = []
+        self.assigned_packages = []
         self.total_distance = 0
 
     def __str__(self):
         """Return a human-readable string representation of the truck."""
-        package_ids = [pkg.id for pkg in self.packages]
+        package_ids = [pkg.id for pkg in self.assigned_packages]
         route_str = " -> ".join(self.route) if self.route else "No route assigned"
         return (
             f"Truck ID: {self.id}\n"
@@ -90,63 +78,7 @@ class Truck:
             f"Assigned Packages: {package_ids}"
         )
 
-    def process_deliveries():
-        pass
-
-    @staticmethod
-    def nearest_neighbor(matrix, addresses, start_index=0):
-        """
-        Nearest Neighbor Algorithm using an adjacency matrix.
-
-        :param matrix: 2D list representing the adjacency matrix.
-        :param nodes: List of node names corresponding to the matrix indices.
-        :param start_index: Index of the starting node.
-        :return: A tuple containing the route (list of nodes) and total distance.
-        """
-        n = len(matrix)
-        visited = [False] * n
-        route = [start_index]
-        total_distance = 0
-
-        current_index = start_index
-        visited[current_index] = True
-
-        for _ in range(n - 1):
-            nearest_distance = float('inf')
-            nearest_index = None
-
-            for next_index in range(n):
-                current_dist = float(matrix[current_index][next_index])
-                if not visited[next_index] and current_dist < nearest_distance:
-                    nearest_distance = current_dist
-                    nearest_index = next_index
-
-            if nearest_index is not None:
-                route.append(nearest_index)
-                total_distance += nearest_distance
-                visited[nearest_index] = True
-                current_index = nearest_index
-
-        # Optionally return to the starting node
-        total_distance += float(matrix[current_index][start_index])
-        route.append(start_index)
-
-        # Convert route indices to node names
-        route_names = [addresses[i] for i in route]
-        return route, route_names, total_distance
-    # TODO
-
-    def nearest_neighbor_with_packages(self, matrix, hub_index=0, packages=None):
-        """
-        Optimize the route for this truck using a nearest neighbor algorithm
-        that directly leverages a specified package array (e.g., current_trip or self.packages).
-
-        :param matrix: 2D list representing the adjacency matrix.
-        :param hub_index: Starting index for the hub in the matrix.
-        :param packages: Optional list of packages to optimize the route for (defaults to self.packages).
-        """
-        if packages is None:
-            packages = self.packages
+    def nearest_neighbor_with_packages(self, matrix, packages, hub_index=0, ):
 
         if not packages:
             print(f"Truck {self.id} has no packages to deliver.")
@@ -192,28 +124,15 @@ class Truck:
         self.route = route
         self.total_distance = total_distance
 
-
     def optimize_route(self, matrix):
-        """
-        Optimize the route for this truck using nearest_neighbor.
-
-        :param matrix: 2D list representing the adjacency matrix.
-        :param nodes: List of node names corresponding to the matrix indices.
-        :param hub_index: Starting index for the hub.
-        """
-        if not self.packages:
+        if not self.assigned_packages:
             print(f"Truck {self.id} has no packages to deliver.")
             return
         self.nearest_neighbor_with_packages(matrix, packages=self.current_trip)
 
     def process_deliveries(self, adjacency_matrix, cutoff_time=None):
-        """
-        Simulate deliveries for this truck, returning to the hub to pick up more packages as needed.
 
-        :param adjacency_matrix: 2D list of distances between addresses.
-        :param cutoff_time: A datetime object representing the cutoff time for deliveries (default: EOD).
-        """
-        if not self.packages:
+        if not self.assigned_packages:
             print(f"Truck {self.id} has no packages to deliver.")
             return
 
@@ -222,7 +141,8 @@ class Truck:
             cutoff_time = datetime.strptime("17:00:00", "%H:%M:%S")
 
         # Track undelivered packages in this truck's assigned set
-        undelivered_packages = [pkg for pkg in self.packages if pkg.status == PackageStatus.AT_HUB]
+        undelivered_packages = [
+            pkg for pkg in self.assigned_packages if pkg.status == PackageStatus.AT_HUB]
 
         while undelivered_packages:
             # Load the truck with up to its capacity
@@ -254,7 +174,8 @@ class Truck:
 
                 # Check if cutoff time is exceeded
                 if current_time > cutoff_time:
-                    print(f"Truck-{self.id} reached the cutoff time. Returning to hub.")
+                    print(
+                        f"Truck-{self.id} reached the cutoff time. Returning to hub.")
                     return
 
                 self.current_time = current_time
@@ -275,4 +196,4 @@ class Truck:
             print(f"Truck-{self.id} returned to the hub at {self.current_time.strftime('%H:%M:%S')}.")
 
             # Update undelivered packages (filter remaining at hub)
-            undelivered_packages = [pkg for pkg in self.packages if pkg.status == PackageStatus.AT_HUB]
+            undelivered_packages = [pkg for pkg in self.assigned_packages if pkg.status == PackageStatus.AT_HUB]
