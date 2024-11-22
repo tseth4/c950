@@ -1,4 +1,5 @@
 from src.package_status import PackageStatus
+from data_structures.hashmap import HashMap
 from datetime import datetime, timedelta
 
 
@@ -9,7 +10,7 @@ class Truck:
         self.current_location_index = 0  # Starting location (e.g., hub)
         self.route = []  # List of addresses/nodes to visit
         self.assigned_packages = []  # List of Package objects
-        self.current_trip = []
+        self.current_trip = HashMap(initial_size=capacity)
         self.total_distance = 0  # Total distance traveled
         self.address_mapping = addresses
         self.current_time = datetime.strptime(start_time, "%H:%M:%S")
@@ -18,8 +19,8 @@ class Truck:
     def get_current_trip(self):
         return self.current_trip
 
-    def set_current_trip(self, trip):
-        self.current_trip = trip
+    # def set_current_trip(self, trip):
+    #     self.current_trip = trip
 
     def get_current_location_index(self):
         return self.current_location_index
@@ -125,10 +126,19 @@ class Truck:
         self.total_distance = total_distance
 
     def optimize_route(self, matrix):
-        if not self.assigned_packages:
-            print(f"Truck {self.id} has no packages to deliver.")
+
+        if not self.current_trip or self.current_trip.count == 0:
+            print(
+                f"Truck {self.id} has no packages to deliver in the current trip.")
             return
-        self.nearest_neighbor_with_packages(matrix, packages=self.current_trip)
+
+        # Extract all packages from the HashMap
+        packages = []
+        for package_list in self.current_trip.values():
+            packages.extend(package_list)
+        print("optimizing: ", len(packages))
+        # Pass the extracted packages to nearest_neighbor_with_packages
+        self.nearest_neighbor_with_packages(matrix, packages=packages)
 
     def process_deliveries(self, adjacency_matrix, cutoff_time=None):
 
@@ -146,17 +156,22 @@ class Truck:
 
         while undelivered_packages:
             # Load the truck with up to its capacity
-            self.current_trip = []
+            self.current_trip = HashMap(
+                initial_size=self.capacity)  # Reset current trip
             for _ in range(self.capacity):
                 if undelivered_packages:
                     package = undelivered_packages.pop(0)
                     package.set_status(PackageStatus.EN_ROUTE)
-                    self.current_trip.append(package)
+                    address_index = package.get_address_index()
+
+                    # Add to current_trip using merge_add
+                    self.current_trip.merge_add(address_index, package)
+
 
             # Optimize the route for the current trip
             self.optimize_route(adjacency_matrix)
 
-            print(f"Truck-{self.id} is starting a trip with {len(self.current_trip)} packages.")
+            print(f"Truck-{self.id} is starting a trip with {self.current_trip.count} packages.")
 
             # Start delivery simulation for this trip
             current_time = self.get_current_time()
@@ -169,7 +184,8 @@ class Truck:
 
                 # Calculate travel time
                 distance = float(adjacency_matrix[prev_index][current_index])
-                travel_time = (distance / speed_mph) * 60  # Convert hours to minutes
+                travel_time = (distance / speed_mph) * \
+                    60  # Convert hours to minutes
                 current_time += timedelta(minutes=travel_time)
 
                 # Check if cutoff time is exceeded
@@ -181,10 +197,13 @@ class Truck:
                 self.current_time = current_time
 
                 # Deliver packages at the current location
-                for package in self.current_trip:
-                    if package.get_address_index() == current_index:
+                packages_at_address = self.current_trip.get(current_index)
+                if packages_at_address:
+                    for package in packages_at_address:
                         package.mark_delivered(
                             self.id, current_time.strftime("%H:%M:%S"))
+                    # Remove the delivered packages from current_trip
+                    self.current_trip.delete(current_index)
 
             # Return to the hub
             # distance_to_hub = float(adjacency_matrix[self.get_current_location_index()][0])
@@ -193,7 +212,9 @@ class Truck:
             # self.current_time = current_time
             # self.current_location_index = 0
 
-            print(f"Truck-{self.id} returned to the hub at {self.current_time.strftime('%H:%M:%S')}.")
+            print(
+                f"Truck-{self.id} returned to the hub at {self.current_time.strftime('%H:%M:%S')}.")
 
             # Update undelivered packages (filter remaining at hub)
-            undelivered_packages = [pkg for pkg in self.assigned_packages if pkg.status == PackageStatus.AT_HUB]
+            undelivered_packages = [
+                pkg for pkg in self.assigned_packages if pkg.status == PackageStatus.AT_HUB]

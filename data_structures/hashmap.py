@@ -1,5 +1,6 @@
 from datetime import datetime
-from src.package_status import PackageStatus 
+from src.package_status import PackageStatus
+
 
 class HashMap:
     def __init__(self, initial_size=10):
@@ -53,6 +54,33 @@ class HashMap:
             self.map[key_hash].append(key_value)
             self.count += 1
 
+    def merge_add(self, key, value):
+        """
+        Add a value to the hash map. If the key already exists, merge the new value
+        with the existing value (assuming it's a list). Updates the count for all additions.
+        """
+        key_hash = self._hash(key)
+        bucket = self.map[key_hash]
+
+        if bucket is None:
+            # No bucket exists for the key, create a new one with a list
+            self.map[key_hash] = [[key, [value]]]
+            self.count += 1  # Increment for the new key
+        else:
+            for pair in bucket:
+                if pair[0] == key:
+                    # Key exists, append the new value to the existing list
+                    pair[1].append(value)
+                    self.count += 1  # Increment for the new value
+                    return
+
+            # Key does not exist in the bucket, add it
+            bucket.append([key, [value]])
+            self.count += 1  # Increment for the new key
+
+        # Increment count for every new item added, regardless of whether it's a new or existing key
+        # self.count += 1
+
     def get(self, key):
         """Retrieve the value associated with the given key."""
         key_hash = self._hash(key)
@@ -64,6 +92,7 @@ class HashMap:
 
     def delete(self, key):
         """Delete a key-value pair from the hash map."""
+        # print("Deleting: ", key)
         key_hash = self._hash(key)
         if self.map[key_hash] is None:
             return False
@@ -158,6 +187,7 @@ class HashMap:
                 for _, value in bucket:
                     values_list.append(value)
         return values_list
+
     def get_undelivered_packages(self):
         """
         Retrieve all undelivered packages from the hash map.
