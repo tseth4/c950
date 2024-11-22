@@ -20,7 +20,12 @@ addresses, distances = load_distances()
 # print(distances)
 
 # populate package.address_index
+# print("PRINTING: ")
 
+for p in packages.values():
+    p.set_address_index(addresses.index(p.get_address()))
+
+# print("END PRINTING")
 
 
 # Truck class
