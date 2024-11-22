@@ -19,6 +19,10 @@ packages = load_packages()
 addresses, distances = load_distances()
 # print(distances)
 
+# populate package.address_index
+
+
+
 # Truck class
 truck1 = Truck(id=1, addresses=addresses, capacity=16)
 truck2 = Truck(id=2, addresses=addresses, capacity=16)
@@ -39,8 +43,8 @@ truck2.optimize_route(distances.matrix)
 process_deliveries(truck1, distances.matrix)
 process_deliveries(truck2, distances.matrix)
 
-for p in truck1.packages:
-    print(p.id)
+# for p in truck1.packages:
+#     print(p.id)
 # Print package details
-for package in packages.values():
-    print(package)
+# for package in packages.values():
+#     print(package)

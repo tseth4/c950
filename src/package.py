@@ -16,9 +16,16 @@ class Package:
         self.status = status
         self.delivery_time = None  # To be updated when delivered
         self.truck_id = None
+        self.address_index = None
 
     def set_status(self, status):
         self.status = status
+
+    def set_address_index(self, index):
+        self.address_index = index
+
+    def get_address_index(self):
+        return self.address_index
 
     def mark_delivered(self, truck_id, delivery_time):
         """
@@ -36,7 +43,7 @@ class Package:
         """
         if self.deadline == "EOD" and self.status == PackageStatus.DELIVERED:
           # End of day deadlines are always met
-            return True  
+            return True
 
         if self.delivery_time is None:
             return False  # If no delivery time, it doesn't meet the deadline
@@ -76,12 +83,13 @@ class Package:
         Return a formatted string with package details.
         """
         meets_deadline_status = "Yes" if self.meets_deadline() else "No"
-        
+
         return (
             f"id: {self.id}   address: {self.address} | "
             f"Deadline: {self.deadline}| Status: {self.status.value} |  "
-            f"by Truck-{self.truck_id}, {self.delivery_time if self.delivery_time else 'Pending'}| Meets Deadline: {meets_deadline_status}"
-            
+            f"by Truck-{self.truck_id}, {
+                self.delivery_time if self.delivery_time else 'Pending'}| Meets Deadline: {meets_deadline_status}"
+
         )
 
     def get_address(self):
