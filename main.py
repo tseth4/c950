@@ -3,6 +3,8 @@ from src.truck import Truck
 from src.package import Package
 from data_structures.nearest_neighbor import nearest_neighbor
 from src.process_deliveries import process_deliveries
+from datetime import datetime, timedelta
+
 
 """
 Deliver 40 packages using 3 trucks under 140 miles total.
@@ -45,8 +47,8 @@ for i, package in enumerate(sorted_packages):
 truck1.optimize_route(distances.matrix)
 truck2.optimize_route(distances.matrix)
 
-process_deliveries(truck1, distances.matrix)
-process_deliveries(truck2, distances.matrix)
+process_deliveries(truck1, distances.matrix, datetime.strptime("9:00:00", "%H:%M:%S"))
+process_deliveries(truck2, distances.matrix, datetime.strptime("9:00:00", "%H:%M:%S"))
 
 # for p in truck1.packages:
 #     print(p.id)

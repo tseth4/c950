@@ -37,11 +37,17 @@ class Truck:
 
     def assign_package(self, package):
         """Assign a package to the truck."""
-        if len(self.packages) < self.capacity:
-            package.set_status(PackageStatus.EN_ROUTE)
-            self.packages.append(package)
-            return True
-        return False
+        package.set_status(PackageStatus.EN_ROUTE)
+        self.packages.append(package)
+
+        # if len(self.packages) < self.capacity:
+        #     package.set_status(PackageStatus.EN_ROUTE)
+        #     self.packages.append(package)
+        #     return True
+        # return False
+        
+    def get_capacity(self):
+        return self.capacity
 
     def set_route(self, route):
         """Set the truck's delivery route."""
@@ -140,8 +146,7 @@ class Truck:
         # indices = [nodes.index(addr) for addr in package_addresses]
 
         # Use nearest_neighbor to calculate the optimal route
-        route, route_names, distance = Truck.nearest_neighbor(
-            matrix, self.address_mapping, hub_index)
+        route, route_names, distance = Truck.nearest_neighbor(matrix, self.address_mapping, hub_index)
 
         # Update truck's route and total distance
         self.route = route
