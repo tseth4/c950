@@ -16,8 +16,8 @@ def process_deliveries(truck, adjacency_matrix):
         return
 
     # Start at 8:00 a.m.
-    current_time = truck.current_time
-    speed_mph = truck.speed
+    current_time = truck.get_current_time()
+    speed_mph = truck.get_speed()
     
     # TODO: Use truck.current_location
     # TODO: As you are delivering pop off the packaged
@@ -29,9 +29,7 @@ def process_deliveries(truck, adjacency_matrix):
 
     for i in range(1, len(truck.route)):  # Skip the hub
         # Get distance from the previous stop to the current stop
-        prev_address_index = truck.current_location_index
-        
-        # get current location index
+        prev_address_index = truck.get_current_location_index()
         current_address_index = truck.route[i]
         truck.current_location_index = current_address_index
         # prev_index = addresses.index(prev_address)
@@ -45,12 +43,6 @@ def process_deliveries(truck, adjacency_matrix):
         # adding travel time to the current time
         current_time += timedelta(minutes=travel_time)
         truck.current_time = current_time
-        
-        # truck.packages
-        # if (i == len(truck.route) - 1):
-        #   pass
-        
-        
 
         # Mark packages as delivered that their address matches the current address
         for package in truck.packages:

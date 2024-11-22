@@ -20,7 +20,21 @@ class Truck:
         self.current_time = datetime.strptime(start_time, "%H:%M:%S")
         self.speed = 18
 
-    
+    def get_current_location_index(self):
+        return self.current_location_index
+
+    def set_current_location_index(self, index):
+        self.current_location_index = index
+
+    def get_speed(self):
+        return self.speed
+
+    def set_current_time(self, time):
+        self.current_time = time
+
+    def get_current_time(self):
+        return self.current_time
+
     def assign_package(self, package):
         """Assign a package to the truck."""
         if len(self.packages) < self.capacity:
@@ -57,7 +71,8 @@ class Truck:
         return (
             f"Truck ID: {self.id}\n"
             f"Capacity: {self.capacity}\n"
-            f"Current Location: {self.address_mapping[self.current_location_index]}\n"
+            f"Current Location: {
+                self.address_mapping[self.current_location_index]}\n"
             f"Total Distance Traveled: {self.total_distance} miles\n"
             f"Route: {route_str}\n"
             f"Assigned Packages: {package_ids}"
@@ -125,7 +140,8 @@ class Truck:
         # indices = [nodes.index(addr) for addr in package_addresses]
 
         # Use nearest_neighbor to calculate the optimal route
-        route, route_names, distance = Truck.nearest_neighbor(matrix, self.address_mapping, hub_index)
+        route, route_names, distance = Truck.nearest_neighbor(
+            matrix, self.address_mapping, hub_index)
 
         # Update truck's route and total distance
         self.route = route
@@ -133,4 +149,3 @@ class Truck:
         # print(f"Truck {self.id} optimized route: {self.route}")
         # print(f"Total distance for Truck {
         #       self.id}: {self.total_distance} miles")
-        
