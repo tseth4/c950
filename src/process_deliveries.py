@@ -47,7 +47,7 @@ def process_deliveries(truck, adjacency_matrix):
         # Mark packages as delivered that their address matches the current address
         for package in truck.packages:
 
-            if package.address == truck.address_mapping[current_address_index]:
+            if package.get_address_index() == current_address_index:
                 # Deliver
                 package.mark_delivered(truck.id, current_time.strftime("%H:%M:%S"))
 

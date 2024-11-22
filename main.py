@@ -51,5 +51,5 @@ process_deliveries(truck2, distances.matrix)
 # for p in truck1.packages:
 #     print(p.id)
 # Print package details
-# for package in packages.values():
-#     print(package)
+for package in packages.values():
+    print(package)
