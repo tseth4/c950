@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 # from src.lookup_package import lookup_package
 
 # TODO:Work on edge cases
-# Can only be on truck <x>: Can use a method during package assignment
+# Can only be on truck 2: Can use a method during package assignment
 # Delayed on flight---will not arrive to depot until <9:05 am>: Will have to be loaded onto truck during second trip. If delayed
 # Package 9 Wrong address listed --: Check current_time and update package 9
 # Must be delivered with n, n: Still unsure what this means
@@ -25,6 +25,33 @@ from datetime import datetime, timedelta
 # E.  Provide screenshots showing successful completion of the code that includes the total mileage traveled by all trucks.
 
 
+def handle_edge_cases(package):
+    if package.notes.startswith("Can only be on truck"):
+        # Extract the truck number by splitting the string
+        truck_number = int(package.notes.split()[-1])
+        print(f"The package {package.id} can only be on truck {truck_number}")
+        # return ["TRUCK_ASSIGNMENT", truck_number]
+    elif package.notes.startswith("Delayed on flight---will not arrive to depot until"):
+        time_str = package.notes.split(
+            "Delayed on flight---will not arrive to depot until")[-1].strip()
+        delay_time = datetime.strptime(time_str, "%I:%M %p")
+        print(f"The package {package.id} will be delayed until {delay_time.strftime('%I:%M %p')}")
+    elif package.notes.startswith("Must be delivered with"):
+        # Extract the package IDs by splitting the string
+        package_ids_str = package.notes.split(
+            "Must be delivered with")[-1].strip()
+        package_ids = [int(pkg_id.strip())
+                       for pkg_id in package_ids_str.split(",")]
+        print(f"Package {package.id} must be delivered with: {package_ids}")
+    elif package.notes.startswith("Wrong address listed -- updated at"):
+        parts = package.notes.split("updated at")[-1].strip()
+        time_part, address_part = parts.split("to", 1)
+        update_time = datetime.strptime(time_part.strip(), "%I:%M %p")
+        updated_address = address_part.strip()
+        print(f"package {package.id}, Address update at {update_time.strftime(
+            '%I:%M %p')} to: {updated_address}")
+
+
 # packages as HashMap
 packages = load_packages()
 # packages.print()
@@ -34,6 +61,7 @@ addresses, distances = load_distances()
 
 # Set package address_index's
 for p in packages.values():
+    handle_edge_cases(p)
     p.set_address_index(addresses.index(p.get_address()))
 
 # Truck classes
@@ -44,7 +72,8 @@ truck2 = Truck(id=2, addresses=addresses, capacity=16)
 trucks = [truck1, truck2]
 
 # Sort all packages by deadline
-sorted_packages = packages.sort_packages_by_deadline_and_proximity(distances.matrix, addresses)
+sorted_packages = packages.sort_packages_by_deadline_and_proximity(
+    distances.matrix, addresses)
 
 # Assign packages to each truck
 for i, package in enumerate(sorted_packages):
@@ -53,10 +82,10 @@ for i, package in enumerate(sorted_packages):
 
 # Start delivery process
 for truck in trucks:
-  truck.process_deliveries(distances.matrix
-                          #  , datetime.strptime("9:00:00", "%H:%M:%S")
-                           )
-  
+    truck.process_deliveries(distances.matrix
+                             #  , datetime.strptime("9:00:00", "%H:%M:%S")
+                             )
+
 print("Truck 1 total distance: ", truck1.total_distance)
 print("Truck 2 total distance: ", truck2.total_distance)
 
