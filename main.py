@@ -12,10 +12,10 @@ from datetime import datetime, timedelta
 # from src.lookup_package import lookup_package
 
 # TODO:Work on edge cases
-# Can only be on truck <x>
-# Delayed on flight---will not arrive to depot until <9:05 am>
-# Package 9 Wrong address listed
-# Must be delivered with n, n
+# Can only be on truck <x>: Can use a method during package assignment
+# Delayed on flight---will not arrive to depot until <9:05 am>: Will have to be loaded onto truck during second trip. If delayed
+# Package 9 Wrong address listed --: Check current_time and update package 9
+# Must be delivered with n, n: Still unsure what this means
 
 # TODO:
 # D.  Provide an intuitive interface for the user to view the delivery status (including the delivery time) of any package at any time and the total mileage traveled by all trucks. (The delivery status should report the package as at the hub, en route, or delivered. Delivery status must include the time.)
@@ -56,6 +56,9 @@ for truck in trucks:
   truck.process_deliveries(distances.matrix
                           #  , datetime.strptime("9:00:00", "%H:%M:%S")
                            )
+  
+  
+
 
 # Print delivery data
 for package in packages.values():
