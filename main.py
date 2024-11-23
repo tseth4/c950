@@ -6,8 +6,10 @@ from src.process_deliveries import process_deliveries
 from datetime import datetime, timedelta
 
 # TODO:Work on edge cases
-# "Can only be on truck <x>"
-# "Delayed on flight---will not arrive to depot until <9:05 am>"
+# Can only be on truck <x>
+# Delayed on flight---will not arrive to depot until <9:05 am>
+# Package 9 Wrong address listed
+# Must be delivered with n, n
 # 
 
 

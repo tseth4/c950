@@ -99,5 +99,3 @@ class Package:
         return f"{self.address}"
 
 
-# "Package
-# ID",	Address,	City, 	State,	Zip,	"Delivery Deadline,	Weight KILO,	Special notes
