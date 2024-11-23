@@ -44,7 +44,7 @@ truck2 = Truck(id=2, addresses=addresses, capacity=16)
 trucks = [truck1, truck2]
 
 # Sort all packages by deadline
-sorted_packages = packages.get_sorted_packages_by_deadline()
+sorted_packages = packages.sort_packages_by_deadline_and_proximity(distances.matrix, addresses)
 
 # Assign packages to each truck
 for i, package in enumerate(sorted_packages):
@@ -57,9 +57,10 @@ for truck in trucks:
                           #  , datetime.strptime("9:00:00", "%H:%M:%S")
                            )
   
-  
+print("Truck 1 total distance: ", truck1.total_distance)
+print("Truck 2 total distance: ", truck2.total_distance)
 
 
 # Print delivery data
-for package in packages.values():
-    print(package)
+# for package in packages.values():
+#     print(package)

@@ -86,7 +86,7 @@ class Truck:
         current_index = hub_index
         visited = set()
         route = [hub_index]
-        total_distance = 0
+        # total_distance = 0
 
         # Create a set of package indices to visit
         package_indices = {package.get_address_index() for package in packages}
@@ -106,7 +106,7 @@ class Truck:
             if nearest_index is not None:
                 # Move to the nearest location
                 route.append(nearest_index)
-                total_distance += nearest_distance
+                # total_distance += nearest_distance
                 visited.add(nearest_index)
                 current_index = nearest_index
 
@@ -114,13 +114,13 @@ class Truck:
                 package_indices.remove(nearest_index)
 
         # Return to the hub
-        distance_to_hub = float(matrix[current_index][hub_index])
-        total_distance += distance_to_hub
+        # distance_to_hub = float(matrix[current_index][hub_index])
+        # total_distance += distance_to_hub
         route.append(hub_index)
 
         # Update the truck's route and total distance
         self.route = route
-        self.total_distance = total_distance
+        # self.total_distance = total_distance
 
     def optimize_route(self, matrix):
 
@@ -143,6 +143,9 @@ class Truck:
 
         # Calculate travel time
         distance = float(adjacency_matrix[prev_index][current_index])
+        print("truck id: ", self.id, " distance from: ", prev_index, " ", current_index, " ", distance)
+        self.total_distance += distance
+        print("truck id: ", self.id, " total distance: ", self.total_distance)
         travel_time = (distance / speed_mph) * \
             60  # Convert hours to minutes
         current_time += timedelta(minutes=travel_time)
@@ -173,9 +176,11 @@ class Truck:
 
                     # Add to current_trip using merge_add
                     self.current_trip.merge_add(address_index, package)
-
+            print("current trip values: ", [pkg.address_index for bucket in self.current_trip.values() for pkg in bucket])
             # Optimize the route for the current trip
             self.optimize_route(adjacency_matrix)
+            print("route: ", self.route)
+
 
             print(f"Truck-{self.id} is starting a trip with {self.current_trip.count} packages.")
 
@@ -198,6 +203,7 @@ class Truck:
                 packages_at_address = self.current_trip.get(current_index)
                 if packages_at_address:
                     for package in packages_at_address:
+                        print("truck id: ", self.id, " delivering package ", package.id, " at address_id ", package.address_index)
                         package.mark_delivered(self.id, current_time.strftime("%H:%M:%S"))
                     # Remove the delivered packages from current_trip
                     self.current_trip.delete(current_index)
