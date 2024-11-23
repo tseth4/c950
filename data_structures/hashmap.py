@@ -78,8 +78,6 @@ class HashMap:
             bucket.append([key, [value]])
             self.count += 1  # Increment for the new key
 
-        # Increment count for every new item added, regardless of whether it's a new or existing key
-        # self.count += 1
 
     def get(self, key):
         """Retrieve the value associated with the given key."""
