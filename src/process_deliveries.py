@@ -14,7 +14,7 @@ def process_deliveries(truck, adjacency_matrix, cutoff_time=None):
   
     while truck.packages:  # Process deliveries while there are packages to deliver
         # Select up to the truck's capacity for this trip <16>
-        print("truck.packages length: ", len(truck.packages))
+        # print("truck.packages length: ", len(truck.packages))
         trip_packages = truck.packages[:truck.get_capacity()]
         truck.route = [0] + [p.get_address_index() for p in trip_packages]  # Hub is index 0
         # Optimize the route for this trip
@@ -40,7 +40,7 @@ def process_deliveries(truck, adjacency_matrix, cutoff_time=None):
             
             # Check if current time exceeds the cutoff
             if current_time > cutoff_time:
-                print(f"Truck-{truck.id} has reached the cutoff time ({cutoff_time.strftime('%H:%M:%S')}).")
+                # print(f"Truck-{truck.id} has reached the cutoff time ({cutoff_time.strftime('%H:%M:%S')}).")
                 truck.current_time = current_time
                 truck.current_location_index = current_address_index
                 return  # Stop the delivery process

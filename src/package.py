@@ -50,9 +50,13 @@ class Package:
 
         if self.delivery_time is None:
             return False  # If no delivery time, it doesn't meet the deadline
+        if self.deadline == "EOD":
+            deadline_dt = datetime.strptime("17:00:00", "%H:%M:%S")
+        else:
+            # Parse the deadline into a datetime object
+            deadline_dt = datetime.strptime(self.deadline, "%I:%M %p")
 
-        # Parse the deadline and delivery time into datetime objects
-        deadline_dt = datetime.strptime(self.deadline, "%I:%M %p")
+        # deadline_dt = datetime.strptime(self.deadline, "%I:%M %p")
         delivery_dt = datetime.strptime(self.delivery_time, "%H:%M:%S")
 
         # Meets deadline if delivered on or before deadline

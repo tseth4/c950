@@ -48,6 +48,16 @@ class Truck:
             raise ValueError("Trip exceeds truck capacity.")
         self.trips.append(packages)
 
+    def mark_trip_packages_en_route(self, trip):
+        """
+        Mark all packages in the given trip as EN_ROUTE.
+
+        :param trip: HashMap containing packages for a specific trip.
+        """
+        for package_list in trip.values():
+            for package in package_list:
+                package.set_status(PackageStatus.EN_ROUTE)
+
     def _nearest_neighbor_for_trip(self, address_indices, adjacency_matrix, hub_index=0):
         """
         Optimize a single trip using the Nearest Neighbor algorithm.
@@ -107,7 +117,7 @@ class Truck:
             self.route.append(trip_route)
             # self.total_distance += trip_distance
 
-    def handle_wrong_address_listed(self, package, current_time, trip, trip_index, current_index):
+    def handle_wrong_address_listed(self, package, current_time, trip, trip_index):
         if package.notes.startswith("Wrong address listed -- updated at"):
             parts = package.notes.split("updated at")[-1].strip()
             time_part, address_part = parts.split("to", 1)
@@ -121,8 +131,8 @@ class Truck:
                 trip.merge_add(new_address_index, package)
                 self.route[trip_index].append(new_address_index)
 
-                print(f"package {package.id}, Address update at {
-                      update_time.strftime('%I:%M %p')} to: {updated_address}")
+                # print(f"package {package.id}, Address update at {
+                #       update_time.strftime('%I:%M %p')} to: {updated_address}")
                 return True
         return False
 
@@ -132,6 +142,10 @@ class Truck:
             cutoff_time = datetime.strptime("17:00:00", "%H:%M:%S")
         # trip index is the hashmap index, trip is the HashMap
         for trip_index, trip in enumerate(self.trips):
+            # Mark all packages in this trip as EN_ROUTE
+            self.mark_trip_packages_en_route(trip)
+
+            # Get the route for this trip
             trip_route = self.route[trip_index]
             current_time = self.current_time
 
@@ -149,7 +163,7 @@ class Truck:
 
                 # Check if cutoff time is exceeded
                 if current_time > cutoff_time:
-                    print(f"Cutoff time reached. Returning to hub.")
+                    # print(f"Cutoff time reached. Returning to hub.")
                     return
 
                 # Retrieve all packages for this address
@@ -157,7 +171,8 @@ class Truck:
                 if packages_at_address:
                     # For each package at the address, mark as delivered or update
                     for package in packages_at_address:
-                        pack_updated = self.handle_wrong_address_listed(package, current_time, trip, trip_index, current_index)
+                        pack_updated = self.handle_wrong_address_listed(
+                            package, current_time, trip, trip_index)
 
                         if pack_updated:
                             # Recalculate route since a new address was appended

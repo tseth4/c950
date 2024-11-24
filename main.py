@@ -1,3 +1,5 @@
+# Name: Tristan Setha
+# Student ID: 012068201
 
 from src.data_loader import load_packages, load_distances
 from src.package_status import PackageStatus
@@ -6,35 +8,37 @@ from src.assign_packages_to_truck import assign_packages_to_truck
 from src.truck import Truck
 
 
-# packages as HashMap
+# Load packages from data/packages.csv as HashMap
 packages = load_packages()
 # packages.print()
 
-# distances as AdjacencyMatrix
+# Load distances from data/distances.csv as AdjacencyMatrix
+# Also grab address mapping as addresses from the distances.csv
 addresses, distances = load_distances()
 
-# Set package address_index's
+# Set package address_index's 
+# (package delivery address as an index in adjacencey matrix)
 for p in packages.values():
     p.set_address_index(addresses.index(p.get_address()))
 
-# Truck classes
+# Instantiate Truck classes
 truck1 = Truck(id=1, capacity=16, address_mapping=addresses)
 truck2 = Truck(id=2, capacity=16, address_mapping=addresses)
 
-# Truck array
+# Create Truck array
 trucks = [truck1, truck2]
 
 # Sort all packages by deadline
 sorted_packages = packages.get_sorted_packages_by_deadline()
 
-# Assign packages to trucks
+# Assign packages to trucks based on edge cases, marks packages enroute
 assign_packages_to_truck(trucks, sorted_packages)
 
-# Optimize routes for each truck
+# Optimize routes for each truck useing Nearest Neighbor
 for truck in trucks:
     truck.optimize_route(distances.matrix)
 
-
+# Process the delivery for each truck, calculates: distance, time, and marks packages as delivered
 for truck in trucks:
     truck.process_deliveries(
         distances.matrix
