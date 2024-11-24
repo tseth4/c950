@@ -15,7 +15,7 @@ class HashMap:
 
     def _resize(self):
         """Resize the hash map when the load factor exceeds the threshold."""
-        print("Resizing hash map...")
+        # print("Resizing hash map...")
         # double the size
         new_size = self.size * 2
         new_map = [None] * new_size
