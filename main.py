@@ -57,20 +57,15 @@ assign_packages_to_truck(trucks, sorted_packages)
 for truck in trucks:
     truck.optimize_route(distances.matrix)
 
-# print(truck1.route)
-# print(truck2.trips)
-# print(truck2.route)
 
-for truck in trucks:
-    truck.trips = [trip for trip in truck.trips if trip.count > 0]
+# for truck in trucks:
+#     print(f"truck {truck.id} route: ", truck.route)
+#     truck.trips = [trip for trip in truck.trips if trip.count > 0]
 # # Process deliveries for each truck
 for truck in trucks:
     truck.process_deliveries(distances.matrix)
 
-# # print("Truck 1 total distance: ", truck1.total_distance)
-# # print("Truck 2 total distance: ", truck2.total_distance)
 
-
-# # Print delivery data
+# Print delivery data
 for package in packages.values():
     print(package)

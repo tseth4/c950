@@ -88,7 +88,7 @@ class Truck:
         distance_to_hub = float(adjacency_matrix[current_index][hub_index])
         # total_distance += distance_to_hub
         route.append(hub_index)
-        print(f"route from nna, truck id: {self.id} : {route}")
+        # print(f"route from nna, truck id: {self.id} : {route}")
 
         # return route, total_distance
         return route
@@ -100,15 +100,25 @@ class Truck:
         for trip in self.trips:
             # Get all address indices in the trip
             trip_addresses = list(trip.keys())
-            trip_route = self._nearest_neighbor_for_trip(trip_addresses, adjacency_matrix)
+            trip_route = self._nearest_neighbor_for_trip(
+                trip_addresses, adjacency_matrix)
 
             self.route.append(trip_route)
             # self.total_distance += trip_distance
 
+    def handle_wrong_address_listed(self, package):
+        if package.notes.startswith("Wrong address listed -- updated at"):
+            parts = package.notes.split("updated at")[-1].strip()
+            time_part, address_part = parts.split("to", 1)
+            update_time = datetime.strptime(time_part.strip(), "%I:%M %p")
+            updated_address = address_part.strip()
+            # print(f"package {package.id}, Address update at {update_time.strftime('%I:%M %p')} to: {updated_address}")
+            pass
+
     def process_deliveries(self, adjacency_matrix, cutoff_time=None):
         if cutoff_time is None:
             # Default to EOD
-            cutoff_time = datetime.strptime("17:00:00", "%H:%M:%S")  
+            cutoff_time = datetime.strptime("17:00:00", "%H:%M:%S")
         # trip index is the hashmap index, trip is the HashMap
         for trip_index, trip in enumerate(self.trips):
             trip_route = self.route[trip_index]
@@ -119,13 +129,9 @@ class Truck:
                 # Address_index to deliver too
                 current_index = trip_route[i]
 
-                # Calculate travel time
-                # print("prev_index: ", prev_index)
-                # print("current_index: ", current_index)
-                # print("trip_route: ", trip_route)
-                # print("len(trip_route)): ", self.route)
                 distance = float(adjacency_matrix[prev_index][current_index])
-                travel_time = (distance / self.speed) * 60  # Convert hours to minutes
+                travel_time = (distance / self.speed) * \
+                    60  # Convert hours to minutes
                 current_time += timedelta(minutes=travel_time)
                 self.total_distance += distance
 
@@ -139,7 +145,8 @@ class Truck:
                 if packages_at_address:
                     # For each package at the address mark as delivered
                     for package in packages_at_address:
-                        package.mark_delivered(self.id, current_time.strftime("%H:%M:%S"))
+                        package.mark_delivered(
+                            self.id, current_time.strftime("%H:%M:%S"))
                         # print(f"Delivered package {package.id} at {current_time.strftime('%H:%M:%S')}")
 
                     # Remove delivered packages from the trip. Remove elemnt given address key
