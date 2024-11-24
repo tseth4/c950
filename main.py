@@ -1,32 +1,9 @@
-# C950 WGUPS ROUTING
-# By: Tristan Setha
-# Student ID: 012068201
-
 
 from src.data_loader import load_packages, load_distances
-from src.truck import Truck
-from src.package import Package
-from data_structures.hashmap import HashMap
-from src.process_deliveries import process_deliveries
+from src.package_status import PackageStatus
 from datetime import datetime, timedelta
 from src.assign_packages_to_truck import assign_packages_to_truck
-
-# from src.lookup_package import lookup_package
-
-# TODO:Work on edge cases
-# Can only be on truck 2: Can use a method during package assignment
-# Delayed on flight---will not arrive to depot until <9:05 am>: Will have to be loaded onto truck during second trip. If delayed
-# Package 9 Wrong address listed --: Check current_time and update package 9
-# Must be delivered with n, n: Still unsure what this means
-
-# TODO:
-# D.  Provide an intuitive interface for the user to view the delivery status (including the delivery time) of any package at any time and the total mileage traveled by all trucks. (The delivery status should report the package as at the hub, en route, or delivered. Delivery status must include the time.)
-# 1.  Provide screenshots to show the status of all packages loaded onto each truck at a time between 8:35 a.m. and 9:25 a.m.
-# 2.  Provide screenshots to show the status of all packages loaded onto each truck at a time between 9:35 a.m. and 10:25 a.m.
-# 3.  Provide screenshots to show the status of all packages loaded onto each truck at a time between 12:03 p.m. and 1:12 p.m.
-# E.  Provide screenshots showing successful completion of the code that includes the total mileage traveled by all trucks.
-
-
+from src.truck import Truck
 
 
 # packages as HashMap
@@ -62,10 +39,124 @@ for truck in trucks:
 #     print(f"truck {truck.id} route: ", truck.route)
 #     truck.trips = [trip for trip in truck.trips if trip.count > 0]
 # # Process deliveries for each truck
+# print("calling trucks again")
 for truck in trucks:
-    truck.process_deliveries(distances.matrix)
+    truck.process_deliveries(
+        distances.matrix,
+        # cutoff_time=datetime.strptime("9:00:00", "%H:%M:%S")
+    )
+def reset_simulation(trucks, packages):
+    """
+    Reset the state of all trucks and packages to their initial conditions.
+    """
+    # Reset all packages
+    for package in packages.values():
+        package.status = PackageStatus.AT_HUB
+        package.delivery_time = None
+
+    # Reset all trucks
+    for truck in trucks:
+        truck.trips = []  # Clear trips
+        truck.route = []  # Clear route
+        truck.current_trip = None  # Reset current trip
+        truck.total_distance = 0  # Reset distance
+        truck.current_time = datetime.strptime("08:00:00", "%H:%M:%S")  # Reset time
 
 
-# Print delivery data
-for package in packages.values():
-    print(package)
+def print_main_menu():
+    """Print the main menu options."""
+    print("\n--- WGUPS Routing Program ---")
+    print("1. View delivery status of all packages")
+    print("2. Look up a package by ID")
+    print("3. View delivery statuses at a specific time")
+    print("4. View total mileage traveled by all trucks")
+    print("5. Exit")
+
+
+def get_package_status_at_time(packages, target_time):
+    """
+    Get the status of all packages at a specific time.
+    :param packages: HashMap of packages.
+    :param target_time: Time to check statuses.
+    """
+    target_time = datetime.strptime(target_time, "%H:%M:%S")
+    print(f"\nPackage statuses at {target_time.strftime('%I:%M:%S %p')}:")
+    # Were pretty much filtering through all dlivered packages?
+    for truck in trucks:
+        truck.process_deliveries(
+            distances.matrix,
+            cutoff_time=target_time
+        )
+    for package in packages.values():
+        print(package)
+
+
+def main():
+    """Main function to run the CLI."""
+    while True:
+        print_main_menu()
+        choice = input("\nEnter your choice: ")
+
+        if choice == "1":
+            print("\n--- All Packages ---")
+            reset_simulation(trucks, packages)  # Reset state before reprocessing
+            assign_packages_to_truck(trucks, sorted_packages)  # Reassign packages
+            for truck in trucks:
+                truck.optimize_route(distances.matrix)  # Optimize routes
+                truck.process_deliveries(distances.matrix)  # Process deliveries
+            for package in packages.values():
+                print(package)
+
+        elif choice == "2":
+            package_id = int(input("\nEnter package ID to look up: "))
+            reset_simulation(trucks, packages)  # Reset state before reprocessing
+            assign_packages_to_truck(trucks, sorted_packages)  # Reassign packages
+            for truck in trucks:
+                truck.optimize_route(distances.matrix)  # Optimize routes
+                truck.process_deliveries(distances.matrix)  # Process deliveries
+            package = packages.get(package_id)
+            if package:
+                print(package)
+            else:
+                print(f"Package {package_id} not found.")
+
+        elif choice == "3":
+            target_time_input = input("\nEnter time to check statuses (HH:MM:SS): ")
+            target_time = datetime.strptime(target_time_input, "%H:%M:%S")
+
+            reset_simulation(trucks, packages)  # Reset state before simulating
+            assign_packages_to_truck(trucks, sorted_packages)  # Reassign packages
+            for truck in trucks:
+                truck.optimize_route(distances.matrix)  # Optimize routes
+                truck.process_deliveries(distances.matrix, cutoff_time=target_time)
+
+            for truck in trucks:
+                truck.process_deliveries(
+                    distances.matrix,
+                    cutoff_time=target_time
+                )
+            for package in packages.values():
+              print(package)
+            # get_package_status_at_time(packages, target_time)
+
+        elif choice == "4":
+            reset_simulation(trucks, packages)  # Reset state before reprocessing
+            assign_packages_to_truck(trucks, sorted_packages)  # Reassign packages
+            for truck in trucks:
+                truck.optimize_route(distances.matrix)  # Optimize routes
+                truck.process_deliveries(distances.matrix)  # Process deliveries
+                print(f"Total distance of Truck {truck.id}: {round(truck.total_distance, 1)} miles")
+            total_mileage = sum(truck.total_distance for truck in trucks)
+            print(f"\nTotal mileage traveled by all trucks: {
+                  total_mileage:.2f} miles")
+
+        elif choice == "5":
+            print("\nExiting program. Goodbye!")
+            break
+
+        else:
+            print("\nInvalid choice. Please try again.")
+
+
+if __name__ == "__main__":
+    main()

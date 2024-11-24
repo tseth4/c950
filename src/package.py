@@ -90,9 +90,9 @@ class Package:
         return (
             f"id: {self.id}   address: {self.address} | "
             f"Deadline: {self.deadline}| Status: {self.status.value} |  "
-            f"by Truck-{self.truck_id}, {
+            f"by Truck-{self.truck_id} | Delivery time: {
                 self.delivery_time if self.delivery_time else 'Pending'}| Meets Deadline: {meets_deadline_status}"
-            f"| notes: {self.notes}"
+            # f"| notes: {self.notes}"
 
         )
 
