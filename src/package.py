@@ -92,6 +92,7 @@ class Package:
             f"Deadline: {self.deadline}| Status: {self.status.value} |  "
             f"by Truck-{self.truck_id}, {
                 self.delivery_time if self.delivery_time else 'Pending'}| Meets Deadline: {meets_deadline_status}"
+            f"| notes: {self.notes}"
 
         )
 
