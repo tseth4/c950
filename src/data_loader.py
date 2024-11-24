@@ -12,7 +12,6 @@ def load_packages():
     with open(packages_file_path, mode='r', encoding='utf-8-sig') as file:
         csv_reader = csv.reader(file)
         for row in csv_reader:
-            # print(row)
             package = Package.from_csv_row(row)
             packages.add(int(row[0]), package)
         return packages
@@ -30,7 +29,6 @@ def load_distances():
 
     # Build Matrix
     distance_matrix = AdjacencyMatrix(len(addresses))
-    # print(distance_matrix)
 
     # Build adjacency matrix
     for i, row in enumerate(rows[1:]):
@@ -59,9 +57,6 @@ def extract_address(full_text):
     """
     lines = full_text.splitlines()  # Split the input into
 
-    # print("lines: ", lines)
     return_string = " ".join(lines[1:]).strip()
     return return_string
-    # if len(lines) > 1:
-    #     return " ".join(lines[1:]).strip()  # Join lines after the first one
-    # return full_text.strip()  # Return as is if only one line
+

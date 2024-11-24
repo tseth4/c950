@@ -1,5 +1,5 @@
 from data_structures.hashmap import HashMap
-from datetime import datetime, timedelta
+from datetime import datetime
 import math
 
 
@@ -23,13 +23,7 @@ def handle_edge_cases(package):
                        for pkg_id in package_ids_str.split(",")]
         # print(f"Package {package.id} must be delivered with: {package_ids}")
         return ["DELIVERED WITH", package_ids]
-    # elif package.notes.startswith("Wrong address listed -- updated at"):
-    #     parts = package.notes.split("updated at")[-1].strip()
-    #     time_part, address_part = parts.split("to", 1)
-    #     update_time = datetime.strptime(time_part.strip(), "%I:%M %p")
-    #     updated_address = address_part.strip()
-    #     # print(f"package {package.id}, Address update at {update_time.strftime('%I:%M %p')} to: {updated_address}")
-    #     return ["ADDRESS DELAYED UPDATE", update_time.strftime('%I:%M %p'), updated_address]
+
 
 
 def assign_packages_to_truck(trucks, packages, capacity=16):
@@ -81,12 +75,6 @@ def assign_packages_to_truck(trucks, packages, capacity=16):
             # Handle "Delayed on flight"
             elif edge_case[0] == "DELAYED ARRIVAL":
                 delayed_packages.append(package)
-                # for truck in truck_trips:
-                #     # if the last trip is not full: merge add
-                #     if truck[-1].count < capacity:
-                #         truck[-1].merge_add(package.get_address_index(), package)
-                #         break
-                # continue
 
             # Handle "Must be delivered with"
             elif edge_case[0] == "DELIVERED WITH":
@@ -121,7 +109,6 @@ def assign_packages_to_truck(trucks, packages, capacity=16):
                 continue
             break
 
-    # print("delayed_packages: ", delayed_packages)
     # Assign delayed packages in round-robin fashion across last trips of trucks
     truck_index = 0
     for package in delayed_packages:
@@ -136,13 +123,6 @@ def assign_packages_to_truck(trucks, packages, capacity=16):
         # Move to the next truck (round-robin)
         truck_index = (truck_index + 1) % len(truck_trips)
 
-    # Add delayed packages to the last trip of each truck
-    # for package in delayed_packages:
-    #     for truck in truck_trips:
-    #         last_trip = truck[-1]  # Get the last trip for this truck
-    #         if last_trip.count < capacity:
-    #             last_trip.merge_add(package.get_address_index(), package)
-    #             break
 
     # Distribute noteless packages evenly across trucks and trips
     truck_index = 0  # Start with the first truck
@@ -180,74 +160,3 @@ def assign_packages_to_truck(trucks, packages, capacity=16):
             truck.trips = truck_trips[i]
 
 
-# def assign_packages_to_truck(trucks, packages, capacity=16):
-#     """
-#     Assign packages to trucks, handling edge cases like specific truck assignments,
-#     grouped deliveries, delayed arrivals, and address updates.
-
-#     :param trucks: List of Truck objects.
-#     :param packages: List of all packages to assign.
-#     :param capacity: Truck capacity (default 16).
-#     """
-#     truck_count = len
-#     truck_count = len(trucks)
-#     package_count = len(packages)
-#     truck_capacity = capacity
-#     truck_trips = [[]] * truck_count
-
-#     # Calculate the number of trips needed per truck
-#     packets_per_truck = package_count / len(truck_trips)
-#     trips_per_truck = math.ceil(packets_per_truck / truck_capacity)
-#     # Initialize trips for each truck
-#     for i, _ in enumerate(truck_trips):
-#         truck_trips[i] = [HashMap(truck_capacity)] * trips_per_truck
-
-#     # Handle edge cases and distribute packages
-#     delayed_packages = []
-#     grouped_package_ids = []
-#     grouped_packages = HashMap()
-#     noteless_packages = []
-
-#     for package in packages:
-#         edge_case = handle_edge_cases(package)
-#         if edge_case:
-#             # Handle "Can only be on truck X"
-#             if edge_case[0] == "TRUCK_ASSIGNMENT":
-#                 # Assuming truck IDs are 1-indexed
-#                 truck_number = edge_case[1] - 1
-#                 for trip in truck_trips[truck_number]:
-#                     if trip.count < capacity:
-#                         trip.merge_add(package.get_address_index(), package)
-#                         break
-#                 continue
-
-#             # Handle "Delayed on flight"
-#             elif edge_case[0] == "DELAYED ARRIVAL":
-#                 for truck in truck_trips:
-#                     last_trip = truck[len(truck) - 1]
-#                     if last_trip.count < capacity:
-#                         last_trip.merge_add(
-#                             package.get_address_index(), package)
-#                         break
-#                 continue
-#                 # Handle "Must be delivered with"
-#             elif edge_case[0] == "DELIVERED WITH":
-#                 grouped_ids = edge_case[1]
-#                 grouped_ids.append(package.id)
-#                 exists = False
-#                 for group in grouped_package_ids:
-#                     for _id in grouped_ids:
-#                         if group.index(_id):
-#                             group.add(_id)
-#                             exists = True
-#                 if not exists:
-#                     grouped_package_ids.push(set(grouped_ids))
-
-#                 # grouped_packages.append([grouped_ids])
-
-#             # Handle "Address delayed update"
-#             # elif edge_case[0] == "ADDRESS DELAYED UPDATE":
-#             #     truck_trips[0][0].merge_add(
-#             #         package.get_address_index(), package)
-
-#     #push the res t

@@ -1,7 +1,7 @@
 
 from src.data_loader import load_packages, load_distances
 from src.package_status import PackageStatus
-from datetime import datetime, timedelta
+from datetime import datetime
 from src.assign_packages_to_truck import assign_packages_to_truck
 from src.truck import Truck
 
@@ -35,16 +35,12 @@ for truck in trucks:
     truck.optimize_route(distances.matrix)
 
 
-# for truck in trucks:
-#     print(f"truck {truck.id} route: ", truck.route)
-#     truck.trips = [trip for trip in truck.trips if trip.count > 0]
-# # Process deliveries for each truck
-# print("calling trucks again")
 for truck in trucks:
     truck.process_deliveries(
-        distances.matrix,
-        # cutoff_time=datetime.strptime("9:00:00", "%H:%M:%S")
+        distances.matrix
     )
+
+
 def reset_simulation(trucks, packages):
     """
     Reset the state of all trucks and packages to their initial conditions.
@@ -60,7 +56,8 @@ def reset_simulation(trucks, packages):
         truck.route = []  # Clear route
         truck.current_trip = None  # Reset current trip
         truck.total_distance = 0  # Reset distance
-        truck.current_time = datetime.strptime("08:00:00", "%H:%M:%S")  # Reset time
+        truck.current_time = datetime.strptime(
+            "08:00:00", "%H:%M:%S")  # Reset time
 
 
 def print_main_menu():
@@ -99,21 +96,27 @@ def main():
 
         if choice == "1":
             print("\n--- All Packages ---")
-            reset_simulation(trucks, packages)  # Reset state before reprocessing
-            assign_packages_to_truck(trucks, sorted_packages)  # Reassign packages
+            # Reset state before reprocessing
+            reset_simulation(trucks, packages)
+            assign_packages_to_truck(
+                trucks, sorted_packages)  # Reassign packages
             for truck in trucks:
                 truck.optimize_route(distances.matrix)  # Optimize routes
-                truck.process_deliveries(distances.matrix)  # Process deliveries
+                truck.process_deliveries(
+                    distances.matrix)  # Process deliveries
             for package in packages.values():
                 print(package)
 
         elif choice == "2":
             package_id = int(input("\nEnter package ID to look up: "))
-            reset_simulation(trucks, packages)  # Reset state before reprocessing
-            assign_packages_to_truck(trucks, sorted_packages)  # Reassign packages
+            # Reset state before reprocessing
+            reset_simulation(trucks, packages)
+            assign_packages_to_truck(
+                trucks, sorted_packages)  # Reassign packages
             for truck in trucks:
                 truck.optimize_route(distances.matrix)  # Optimize routes
-                truck.process_deliveries(distances.matrix)  # Process deliveries
+                truck.process_deliveries(
+                    distances.matrix)  # Process deliveries
             package = packages.get(package_id)
             if package:
                 print(package)
@@ -121,14 +124,17 @@ def main():
                 print(f"Package {package_id} not found.")
 
         elif choice == "3":
-            target_time_input = input("\nEnter time to check statuses (HH:MM:SS): ")
+            target_time_input = input(
+                "\nEnter time to check statuses (HH:MM:SS): ")
             target_time = datetime.strptime(target_time_input, "%H:%M:%S")
 
             reset_simulation(trucks, packages)  # Reset state before simulating
-            assign_packages_to_truck(trucks, sorted_packages)  # Reassign packages
+            assign_packages_to_truck(
+                trucks, sorted_packages)  # Reassign packages
             for truck in trucks:
                 truck.optimize_route(distances.matrix)  # Optimize routes
-                truck.process_deliveries(distances.matrix, cutoff_time=target_time)
+                truck.process_deliveries(
+                    distances.matrix, cutoff_time=target_time)
 
             for truck in trucks:
                 truck.process_deliveries(
@@ -136,16 +142,20 @@ def main():
                     cutoff_time=target_time
                 )
             for package in packages.values():
-              print(package)
+                print(package)
             # get_package_status_at_time(packages, target_time)
 
         elif choice == "4":
-            reset_simulation(trucks, packages)  # Reset state before reprocessing
-            assign_packages_to_truck(trucks, sorted_packages)  # Reassign packages
+            # Reset state before reprocessing
+            reset_simulation(trucks, packages)
+            assign_packages_to_truck(
+                trucks, sorted_packages)  # Reassign packages
             for truck in trucks:
                 truck.optimize_route(distances.matrix)  # Optimize routes
-                truck.process_deliveries(distances.matrix)  # Process deliveries
-                print(f"Total distance of Truck {truck.id}: {round(truck.total_distance, 1)} miles")
+                truck.process_deliveries(
+                    distances.matrix)  # Process deliveries
+                print(f"Total distance of Truck {truck.id}: {
+                      round(truck.total_distance, 1)} miles")
             total_mileage = sum(truck.total_distance for truck in trucks)
             print(f"\nTotal mileage traveled by all trucks: {
                   total_mileage:.2f} miles")
