@@ -41,8 +41,8 @@ for p in packages.values():
     p.set_address_index(addresses.index(p.get_address()))
 
 # Truck classes
-truck1 = Truck(id=1, capacity=16)
-truck2 = Truck(id=2, capacity=16)
+truck1 = Truck(id=1, capacity=16, address_mapping=addresses)
+truck2 = Truck(id=2, capacity=16, address_mapping=addresses)
 
 # Truck array
 trucks = [truck1, truck2]

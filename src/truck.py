@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 
 class Truck:
-    def __init__(self, id, capacity, speed=18, start_time="08:00:00"):
+    def __init__(self, id, capacity, address_mapping, speed=18, start_time="08:00:00"):
         self.id = id
         self.capacity = capacity
         self.speed = speed
@@ -14,6 +14,7 @@ class Truck:
         self.total_distance = 0
         self.trips = []  # List of HashMaps for trips
         self.route = []  # 2D array of routes for each trip
+        self.address_mapping = address_mapping
 
     def get_current_location_index(self):
         return self.current_location_index
@@ -106,14 +107,24 @@ class Truck:
             self.route.append(trip_route)
             # self.total_distance += trip_distance
 
-    def handle_wrong_address_listed(self, package):
+    def handle_wrong_address_listed(self, package, current_time, trip, trip_index, current_index):
         if package.notes.startswith("Wrong address listed -- updated at"):
             parts = package.notes.split("updated at")[-1].strip()
             time_part, address_part = parts.split("to", 1)
             update_time = datetime.strptime(time_part.strip(), "%I:%M %p")
             updated_address = address_part.strip()
-            # print(f"package {package.id}, Address update at {update_time.strftime('%I:%M %p')} to: {updated_address}")
-            pass
+            if (current_time.strftime("%H:%M:%S") >= update_time.strftime('%I:%M %p') and self.address_mapping[package.address_index] != updated_address):
+                new_address_index = self.address_mapping.index(updated_address)
+                package.address_index = new_address_index
+                package.address = updated_address
+
+                trip.merge_add(new_address_index, package)
+                self.route[trip_index].append(new_address_index)
+
+                print(f"package {package.id}, Address update at {
+                      update_time.strftime('%I:%M %p')} to: {updated_address}")
+                return True
+        return False
 
     def process_deliveries(self, adjacency_matrix, cutoff_time=None):
         if cutoff_time is None:
@@ -123,12 +134,13 @@ class Truck:
         for trip_index, trip in enumerate(self.trips):
             trip_route = self.route[trip_index]
             current_time = self.current_time
-            # start delivering skip hub
-            for i in range(1, len(trip_route)):
+
+            i = 1  # Start delivering from the first stop after hub
+            while i < len(trip_route):
                 prev_index = trip_route[i - 1]
-                # Address_index to deliver too
                 current_index = trip_route[i]
 
+                # Calculate distance and travel time
                 distance = float(adjacency_matrix[prev_index][current_index])
                 travel_time = (distance / self.speed) * \
                     60  # Convert hours to minutes
@@ -140,18 +152,27 @@ class Truck:
                     print(f"Cutoff time reached. Returning to hub.")
                     return
 
-                # Retrieve all packages for this address. Trip <HashMap>.get(current_index<CurentaddresstoDeliver>)
+                # Retrieve all packages for this address
                 packages_at_address = trip.get(current_index)
                 if packages_at_address:
-                    # For each package at the address mark as delivered
+                    # For each package at the address, mark as delivered or update
                     for package in packages_at_address:
-                        package.mark_delivered(
-                            self.id, current_time.strftime("%H:%M:%S"))
-                        # print(f"Delivered package {package.id} at {current_time.strftime('%H:%M:%S')}")
+                        pack_updated = self.handle_wrong_address_listed(package, current_time, trip, trip_index, current_index)
 
-                    # Remove delivered packages from the trip. Remove elemnt given address key
+                        if pack_updated:
+                            # Recalculate route since a new address was appended
+                            trip_route = self.route[trip_index]
+                            # Don't increment `i` so the next iteration processes the newly appended address
+                            break
+                        else:
+                            # print(f"Marking {package.id} as delivered")
+                            package.mark_delivered(
+                                self.id, current_time.strftime("%H:%M:%S"))
+
+                    # Remove delivered packages from the trip
                     trip.delete(current_index)
+
+                i += 1  # Only increment if no new address was added
 
             # Update truck's current time
             self.current_time = current_time
-            # print(f"Trip {trip_index + 1} completed. Returned to hub at {self.current_time.strftime('%H:%M:%S')}.")
