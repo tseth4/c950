@@ -77,15 +77,15 @@ Weaknesses: Hash collisions may require additional logic to resolve conflicts.
 
 ##### 1.  Provide screenshots to show the status of all packages loaded onto each truck at a time between 8:35 a.m. and 9:25 a.m.
 
-![9 AM](screenshots/0900_deliveries.png)
+![9 AM](screenshots/0900_deliveries2.png)
 
 ##### ##### 2.  Provide screenshots to show the status of all packages loaded onto each truck at a time between 9:35 a.m. and 10:25 a.m.
 
-![10 AM](screenshots/1000_deliveries.png)
+![10 AM](screenshots/1000_deliveries2.png)
 
 ##### 3.  Provide screenshots to show the status of all packages loaded onto each truck at a time between 12:03 p.m. and 1:12 p.m.
 
-![12:30 AM](screenshots/1230_deliveries.png)
+![12:30 AM](screenshots/1230_deliveries2.png)
 
 
 ##### E.  Provide screenshots showing successful completion of the code that includes the total mileage traveled by all trucks.
