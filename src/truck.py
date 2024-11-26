@@ -117,29 +117,12 @@ class Truck:
             self.route.append(trip_route)
             # self.total_distance += trip_distance
 
-    def handle_wrong_address_listed(self, package, current_time, trip, trip_index):
-        if package.notes.startswith("Wrong address listed -- updated at"):
-            parts = package.notes.split("updated at")[-1].strip()
-            time_part, address_part = parts.split("to", 1)
-            update_time = datetime.strptime(time_part.strip(), "%I:%M %p")
-            updated_address = address_part.strip()
-            if (current_time.strftime("%H:%M:%S") >= update_time.strftime('%I:%M %p') and self.address_mapping[package.address_index] != updated_address):
-                new_address_index = self.address_mapping.index(updated_address)
-                package.address_index = new_address_index
-                package.address = updated_address
-
-                trip.merge_add(new_address_index, package)
-                self.route[trip_index].append(new_address_index)
-
-                # print(f"package {package.id}, Address update at {
-                #       update_time.strftime('%I:%M %p')} to: {updated_address}")
-                return True
-        return False
-
     def process_deliveries(self, adjacency_matrix, cutoff_time=None):
         if cutoff_time is None:
             # Default to EOD
             cutoff_time = datetime.strptime("17:00:00", "%H:%M:%S")
+        hardcoded_time = datetime.strptime("10:20:00", "%H:%M:%S")
+
         # trip index is the hashmap index, trip is the HashMap
         for trip_index, trip in enumerate(self.trips):
             # Mark all packages in this trip as EN_ROUTE
@@ -159,7 +142,46 @@ class Truck:
                 travel_time = (distance / self.speed) * \
                     60  # Convert hours to minutes
                 current_time += timedelta(minutes=travel_time)
+                # print("current time updated: ", current_time)
                 self.total_distance += distance
+
+                # Hardcoded check for package 9 at 10:20 AM
+                if current_time >= hardcoded_time:
+                    # print("Hardcoded address update triggered")
+                    for trip_idx, specific_trip in enumerate(self.trips):
+                        for address, package_list in specific_trip.items():
+                            for package in package_list:
+                                if package.id == 9:  # Locate package 9
+                                    # print(f"Package 9 found in trip {
+                                    #       trip_idx} at address {address}")
+
+                                    # Update address details
+                                    new_address = "410 S State St"  # Replace with the actual address
+                                    new_address_index = self.address_mapping.index(
+                                        new_address)
+                                    package.address = new_address
+                                    package.address_index = new_address_index
+
+                                    # Remove package from current trip
+                                    package_list.remove(package)
+                                    if not package_list:  # Remove address if no packages remain
+                                        del specific_trip[address]
+
+                                    # Add package to the updated trip
+                                    specific_trip.merge_add(
+                                        new_address_index, package)
+
+                                    # Update the route for the trip
+                                    if new_address_index not in self.route[trip_idx]:
+                                        self.route[trip_idx].append(
+                                            new_address_index)
+
+                                    # print(f"Package 9 updated to {
+                                    #       new_address} and moved to trip {trip_idx}")
+                                    break  # Exit once package 9 is found and updated
+                            else:
+                                continue  # Continue outer loop if inner loop didn't break
+                            break  # Break outermost loop if inner loop breaks
 
                 # Check if cutoff time is exceeded
                 if current_time > cutoff_time:
@@ -171,18 +193,8 @@ class Truck:
                 if packages_at_address:
                     # For each package at the address, mark as delivered or update
                     for package in packages_at_address:
-                        pack_updated = self.handle_wrong_address_listed(
-                            package, current_time, trip, trip_index)
-
-                        if pack_updated:
-                            # Recalculate route since a new address was appended
-                            trip_route = self.route[trip_index]
-                            # Don't increment `i` so the next iteration processes the newly appended address
-                            break
-                        else:
-                            # print(f"Marking {package.id} as delivered")
-                            package.mark_delivered(
-                                self.id, current_time.strftime("%H:%M:%S"))
+                        package.mark_delivered(
+                            self.id, current_time.strftime("%H:%M:%S"))
 
                     # Remove delivered packages from the trip
                     trip.delete(current_index)

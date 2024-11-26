@@ -46,13 +46,9 @@ for truck in trucks:
 
 
 def reset_simulation(trucks, packages):
-    """
-    Reset the state of all trucks and packages to their initial conditions.
-    """
     # Reset all packages
     for package in packages.values():
-        package.status = PackageStatus.AT_HUB
-        package.delivery_time = None
+        package.reset(addresses)  # Use the reset method to revert state and address
 
     # Reset all trucks
     for truck in trucks:
@@ -60,8 +56,7 @@ def reset_simulation(trucks, packages):
         truck.route = []  # Clear route
         truck.current_trip = None  # Reset current trip
         truck.total_distance = 0  # Reset distance
-        truck.current_time = datetime.strptime(
-            "08:00:00", "%H:%M:%S")  # Reset time
+        truck.current_time = datetime.strptime("08:00:00", "%H:%M:%S")  # Reset time
 
 
 def print_main_menu():

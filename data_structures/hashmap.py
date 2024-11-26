@@ -78,7 +78,6 @@ class HashMap:
             bucket.append([key, [value]])
             self.count += 1  # Increment for the new key
 
-
     def get(self, key):
         """Retrieve the value associated with the given key."""
         key_hash = self._hash(key)
@@ -199,3 +198,12 @@ class HashMap:
                     if package.status == PackageStatus.AT_HUB:
                         at_hub.append(package)
         return at_hub
+
+    def items(self):
+        """
+        Yield all key-value pairs in the hash map as tuples.
+        """
+        for bucket in self.map:
+            if bucket:  # Check if the bucket is not empty
+                for key, value in bucket:
+                    yield key, value

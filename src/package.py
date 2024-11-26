@@ -7,6 +7,7 @@ class Package:
     def __init__(self, id, address, city, state, zipcode, deadline, weight_in_kilo, notes, status=PackageStatus.AT_HUB):
         self.id = int(id)
         self.address = address
+        self.original_address = address  # Store the original address
         self.city = city
         self.state = state
         self.zipcode = zipcode
@@ -17,6 +18,15 @@ class Package:
         self.delivery_time = None  # To be updated when delivered
         self.truck_id = None
         self.address_index = None
+
+    def reset(self, address_mapping):
+        """Reset package to its initial state."""
+        # print("addresses in reset: ", address_mapping)
+        # print(f"resetting package addres p_{self.id}: ", address_mapping.index(self.original_address))
+        self.address = self.original_address
+        self.address_index = address_mapping.index(self.original_address)
+        self.status = PackageStatus.AT_HUB
+        self.delivery_time = None
 
     def set_status(self, status):
         self.status = status
@@ -102,5 +112,3 @@ class Package:
 
     def get_address(self):
         return f"{self.address}"
-
-

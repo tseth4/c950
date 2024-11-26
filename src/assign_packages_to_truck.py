@@ -25,7 +25,6 @@ def handle_edge_cases(package):
         return ["DELIVERED WITH", package_ids]
 
 
-
 def assign_packages_to_truck(trucks, packages, capacity=16):
     """
     Assign packages to trucks, handling edge cases like specific truck assignments,
@@ -123,7 +122,6 @@ def assign_packages_to_truck(trucks, packages, capacity=16):
         # Move to the next truck (round-robin)
         truck_index = (truck_index + 1) % len(truck_trips)
 
-
     # Distribute noteless packages evenly across trucks and trips
     truck_index = 0  # Start with the first truck
     trip_index = 0   # Start with the first trip for each truck
@@ -131,7 +129,8 @@ def assign_packages_to_truck(trucks, packages, capacity=16):
     for package in noteless_packages:
         assigned = False  # Flag to track if the package has been assigned
 
-        for _ in range(len(truck_trips) * len(truck_trips[0])):  # Ensure all trucks and trips are checked
+        # Ensure all trucks and trips are checked
+        for _ in range(len(truck_trips) * len(truck_trips[0])):
             # Get the current truck's trips
             truck_trip = truck_trips[truck_index]
 
@@ -153,10 +152,9 @@ def assign_packages_to_truck(trucks, packages, capacity=16):
 
         # If no trips have space, skip the package (optional logging for debugging)
         if not assigned:
-            print(f"Unable to assign package {package.id}. All trips are full.")
+            print(f"Unable to assign package {
+                  package.id}. All trips are full.")
 
         # Assign trips to trucks
-        for i, truck in enumerate(trucks):
-            truck.trips = truck_trips[i]
-
-
+    for i, truck in enumerate(trucks):
+        truck.trips = truck_trips[i]
